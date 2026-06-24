@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pollo Loco</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/classes/drawable-object.class.js" defer></script>
+    <script src="./js/classes/moveable-object.class.js" defer></script>
+    <script src="./js/classes/character.class.js" defer></script>
+    <script src="./js/classes/chicken.class.js" defer></script>
+    <script src="./js/classes/baby-chicken.class.js" defer></script>
+    <script src="./js/classes/endboss.class.js" defer></script>
+    <script src="./js/classes/world.class.js" defer></script>
+    <script src="./js/classes/keyboard.class.js" defer></script>
+    <script src="./js/classes/level.class.js" defer></script>
+    <script src="./js/levels/level1.js" defer></script>
+    <script src="./js/game.js" defer></script>
+</head>
+<body>
+    <main class="page">
+        <h1 class="game-title">AI Pollo Loco</h1>
+
+        <section class="game-wrapper">
+            <canvas id="canvas" width="720" height="480"></canvas>
+
+            <section id="start-screen" class="screen">
+                <!-- Image placeholder: assets/img/... -->
+                <button id="start-game-btn" type="button">Start Game</button>
+            </section>
+
+            <section id="end-screen" class="screen hidden">
+                <!-- Image placeholder: assets/img/... -->
+                <h2>Game Over</h2>
+            </section>
+
+            <nav class="game-actions" aria-label="Game actions">
+                <button id="fullscreen-btn" type="button">Fullscreen</button>
+                <button id="restart-btn" type="button">Restart</button>
+                <button id="mute-btn" type="button">Mute</button>
+            </nav>
+
+            <section class="mobile-controls" aria-label="Mobile controls">
+                <div class="mobile-control-group">
+                    <button id="btn-left" type="button">Left</button>
+                    <button id="btn-right" type="button">Right</button>
+                </div>
+                <div class="mobile-control-group">
+                    <button id="btn-jump" type="button">Jump</button>
+                    <button id="btn-throw" type="button">Throw</button>
+                </div>
+            </section>
+        </section>
+
+        <section class="controls-info">
+            <span><kbd>A</kbd> Move left</span>
+            <span><kbd>D</kbd> Move right</span>
+            <span><kbd>Space</kbd> Jump</span>
+            <span><kbd>K</kbd> Throw</span>
+        </section>
+    </main>
+</body>
+</html>
