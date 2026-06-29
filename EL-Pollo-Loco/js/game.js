@@ -43,12 +43,21 @@ function startGame() {
 
     console.log("Start Game geklickt");
 }
-
 function restartGame() {
-    world = new World(canvas);
+    if (world) {
+        world.stop();
+        world = null;
+    }
+
+    clearCanvas();
     showStartScreen();
 
     console.log("Restart Game geklickt");
+}
+
+function clearCanvas() {
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function fullscreenGame() {
