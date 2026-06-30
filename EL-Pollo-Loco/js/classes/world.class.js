@@ -1,30 +1,26 @@
 class World {
+    character = new Character();
+    enemies = [
+        new Chicken(),
+        new Chicken(),
+        new BabyChicken()
+    ];
 
-    character;
-    keyboard;
     canvas;
     ctx;
     animationFrameId;
-    isRunning = true;
 
     constructor(canvas) {
         this.canvas = canvas;
-        this.ctx = this.canvas.getContext("2d");
-
-        this.character = new Character();
-        this.keyboard = new Keyboard();
-
+        this.ctx = canvas.getContext("2d");
         this.draw();
     }
 
     draw() {
-        if (!this.isRunning) {
-            return;
-        }
+        this.clearCanvas();
 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.character.draw(this.ctx);
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.enemies);
 
         this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
@@ -32,7 +28,21 @@ class World {
     }
 
     stop() {
-        this.isRunning = false;
         cancelAnimationFrame(this.animationFrameId);
+        this.clearCanvas();
+    }
+
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    addObjectsToMap(objects) {
+        objects.forEach((object) => {
+            this.addToMap(object);
+        });
+    }
+
+    addToMap(object) {
+        object.draw(this.ctx);
     }
 }

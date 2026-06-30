@@ -49,7 +49,6 @@ function restartGame() {
         world = null;
     }
 
-    clearCanvas();
     showStartScreen();
 
     console.log("Restart Game geklickt");
@@ -97,3 +96,4 @@ function hideStartScreen() {
 function showStartScreen() {
     document.getElementById("start-screen").classList.remove("hidden");
 }
+
