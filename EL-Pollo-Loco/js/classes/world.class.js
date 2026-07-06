@@ -3,7 +3,8 @@ class World {
     enemies = [
         new Chicken(),
         new Chicken(),
-        new BabyChicken()
+        new BabyChicken(),
+        new Endboss()
     ];
 
     canvas;
