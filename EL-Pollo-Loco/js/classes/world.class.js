@@ -1,11 +1,18 @@
 class World {
-    character = new Character();
+
+    keyboard = new Keyboard();
+
+    character = new Character(this.keyboard);
+
     enemies = [
         new Chicken(),
         new Chicken(),
         new BabyChicken(),
         new Endboss()
+
     ];
+
+
 
     canvas;
     ctx;

@@ -39,4 +39,6 @@ class DrawableObject {
             this.currentImage = 0;
         }
     }
+
+    
 }
