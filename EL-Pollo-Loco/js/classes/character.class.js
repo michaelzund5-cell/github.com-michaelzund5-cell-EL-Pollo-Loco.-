@@ -25,7 +25,9 @@ class Character extends MoveableObject {
         this.height = 280;
         this.speed = 5;
 
+        this.applyGravity();
         this.animate();
+
     }
 
 
@@ -33,18 +35,28 @@ class Character extends MoveableObject {
         setInterval(() => {
             if (this.keyboard.RIGHT) {
                 this.moveRight();
+                this.playAnimation(this.IMAGES_WALKING);
             }
 
             if (this.keyboard.LEFT) {
                 this.moveLeft();
+                this.playAnimation(this.IMAGES_WALKING);
             }
 
             if (this.keyboard.SPACE) {
                 this.jump();
             }
         }, 1000 / 60);
+
+        setInterval(() => {
+            if (this.keyboard.RIGHT || this.keyboard.LEFT) {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+        }, 150);
+
     }
 }
+
 
 
 

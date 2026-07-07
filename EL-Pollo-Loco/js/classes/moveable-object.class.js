@@ -4,10 +4,6 @@ class MoveableObject extends DrawableObject {
     speedY = 0;
     acceleration = 2;
 
-    applyGravity() {
-
-    }
-
     moveRight() {
         this.x += this.speed;
     }
@@ -17,6 +13,22 @@ class MoveableObject extends DrawableObject {
     }
 
     jump() {
-        this.speedY = 5;
+        this.speedY = -25;
+    }
+
+    applyGravity() {
+        setInterval(() => {
+            if (this.isAboveGround() || this.speedY < 0) {
+                this.y += this.speedY;
+                this.speedY += this.acceleration;
+            } else {
+                this.y = 250;
+                this.speedY = 0;
+            }
+        }, 1000 / 25);
+
+    }
+    isAboveGround() {
+        return this.y < 250;
     }
 }
