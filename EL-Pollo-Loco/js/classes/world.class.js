@@ -12,6 +12,9 @@ class World {
 
     ];
 
+    backgroundObjects = level1Backgrounds;
+    clouds = level1Clouds;
+
 
 
     canvas;
@@ -27,12 +30,16 @@ class World {
     draw() {
         this.clearCanvas();
 
+        this.addObjectsToMap(this.backgroundObjects);
+        this.addObjectsToMap(this.clouds);
         this.addToMap(this.character);
         this.addObjectsToMap(this.enemies);
 
         this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
         });
+
+
     }
 
     stop() {
