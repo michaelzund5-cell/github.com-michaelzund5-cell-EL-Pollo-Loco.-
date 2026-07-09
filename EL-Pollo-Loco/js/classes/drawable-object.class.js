@@ -29,9 +29,11 @@ class DrawableObject {
             this.height
         );
     }
-
+    
     playAnimation(images) {
-        let path = images[this.currentImage];
+        let index = this.currentImage % images.length;
+        let path = images[index];
+
         this.img = this.imageCache[path];
         this.currentImage++;
 
@@ -39,6 +41,4 @@ class DrawableObject {
             this.currentImage = 0;
         }
     }
-
-    
 }

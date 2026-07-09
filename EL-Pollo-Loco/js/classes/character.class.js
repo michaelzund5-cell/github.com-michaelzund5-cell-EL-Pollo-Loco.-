@@ -1,3 +1,5 @@
+
+
 class Character extends MoveableObject {
 
     IMAGES_WALKING = [
@@ -9,6 +11,34 @@ class Character extends MoveableObject {
         "./assets/img/img_pollo_locco/img/2_character_pepe/2_walk/W-26.png"
     ];
 
+    IMAGES_JUMPING = [
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-31.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-32.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-33.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-34.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-35.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-36.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-37.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-38.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/3_jump/J-39.png"
+    ];
+
+    IMAGES_IDLE = [
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-1.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-2.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-3.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-4.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-5.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-6.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-7.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-8.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-9.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-10.png"
+    ];
+
+
+
+
     constructor(keyboard) {
         super();
         this.keyboard = keyboard;
@@ -16,8 +46,8 @@ class Character extends MoveableObject {
 
         this.loadImage("./assets/img/img_pollo_locco/img/2_character_pepe/2_walk/W-21.png");
         this.loadImages(this.IMAGES_WALKING);
-        //this.loadImages(this.IMAGES_JUMPING);
-        //this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_JUMPING);
+        this.loadImages(this.IMAGES_IDLE);
 
         this.x = 100;
         this.y = 250;
@@ -35,27 +65,51 @@ class Character extends MoveableObject {
         setInterval(() => {
             if (this.keyboard.RIGHT) {
                 this.moveRight();
-                this.playAnimation(this.IMAGES_WALKING);
+
             }
 
             if (this.keyboard.LEFT) {
                 this.moveLeft();
-                this.playAnimation(this.IMAGES_WALKING);
+
             }
 
             if (this.keyboard.SPACE) {
                 this.jump();
             }
         }, 1000 / 60);
-
+        // Animation
         setInterval(() => {
-            if (this.keyboard.RIGHT || this.keyboard.LEFT) {
+            if (this.isAboveGround()) {
+                this.playAnimation(this.IMAGES_JUMPING);
+            } else if (this.keyboard.RIGHT || this.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
+            } else {
+                this.playAnimation(this.IMAGES_IDLE);
             }
         }, 150);
 
+
+
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
