@@ -14,9 +14,9 @@ class Endboss extends Chicken {
         this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
 
-      
+
         this.x = 1000 + Math.random() * 1000;
-        this.y = 95;
+        this.y = 45;
         this.width = 250;
         this.height = 400;
 
@@ -24,7 +24,7 @@ class Endboss extends Chicken {
 
 
 
-        
+
     }
 
 

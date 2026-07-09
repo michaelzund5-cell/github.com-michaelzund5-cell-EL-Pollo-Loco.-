@@ -36,6 +36,22 @@ class Character extends MoveableObject {
         "./assets/img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-10.png"
     ];
 
+    IMAGES_HURT = [
+        "./assets/img/img_pollo_locco/img/2_character_pepe/4_hurt/H-41.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/4_hurt/H-42.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/4_hurt/H-43.png"
+    ];
+
+    IMAGES_DEAD = [
+        "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-51.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-52.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-53.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-54.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-55.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-56.png",
+        "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-57.png"
+    ];
+
 
 
 
@@ -48,15 +64,18 @@ class Character extends MoveableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_IDLE);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_DEAD);
 
         this.x = 100;
-        this.y = 250;
+        this.y = 180;
         this.width = 150;
-        this.height = 280;
+        this.height = 190;
         this.speed = 5;
 
         this.applyGravity();
         this.animate();
+
 
     }
 
@@ -76,23 +95,34 @@ class Character extends MoveableObject {
             if (this.keyboard.SPACE) {
                 this.jump();
             }
+
+            if (this.keyboard.H) {
+                this.hit();
+            }
         }, 1000 / 60);
+
         // Animation
         setInterval(() => {
-            if (this.isAboveGround()) {
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+
+            } else if (this.isHurt()) {
+                this.playAnimation(this.IMAGES_HURT);
+
+            } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
+
             } else if (this.keyboard.RIGHT || this.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
+
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }, 150);
 
-
-
-
     }
 }
+
 
 
 
