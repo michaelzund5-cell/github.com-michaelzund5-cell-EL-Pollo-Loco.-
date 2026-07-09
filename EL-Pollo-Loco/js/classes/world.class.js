@@ -35,10 +35,11 @@ class World {
         this.addToMap(this.character);
         this.addObjectsToMap(this.enemies);
 
+        this.checkCollisions();
+
         this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
         });
-
 
     }
 
@@ -60,4 +61,15 @@ class World {
     addToMap(object) {
         object.draw(this.ctx);
     }
+
+    checkCollisions() {
+        this.enemies.forEach((enemy) => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit();
+                console.log("Character hit! Energy: " + this.character.energy);
+            }
+        });
+
+
+}
 }
