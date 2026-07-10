@@ -4,6 +4,9 @@ class World {
 
     character = new Character(this.keyboard);
 
+    camera_x = 0;
+    levelEndX = 3000;
+
     enemies = [
         new Chicken(),
         new Chicken(),
@@ -27,20 +30,27 @@ class World {
         this.draw();
     }
 
+
+
     draw() {
         this.clearCanvas();
+        this.updateCamera();
+
+        this.ctx.save();
+        this.ctx.translate(this.camera_x, 0);
 
         this.addObjectsToMap(this.backgroundObjects);
         this.addObjectsToMap(this.clouds);
         this.addToMap(this.character);
         this.addObjectsToMap(this.enemies);
 
+        this.ctx.restore();
+
         this.checkCollisions();
 
         this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
         });
-
     }
 
     stop() {
@@ -62,6 +72,8 @@ class World {
         object.draw(this.ctx);
     }
 
+
+
     checkCollisions() {
         this.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
@@ -71,5 +83,18 @@ class World {
         });
 
 
-}
+    }
+    updateCamera() {
+        this.camera_x = -this.character.x + 100;
+         if (this.camera_x > 0) {
+            this.camera_x = 0;
+            
+        }
+        if (this.camera_x < -1500) {
+            this.camera_x = -1500;
+        }
+
+    }
+
+
 }

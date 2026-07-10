@@ -1,5 +1,3 @@
-
-
 class Character extends MoveableObject {
 
     IMAGES_WALKING = [
@@ -52,15 +50,12 @@ class Character extends MoveableObject {
         "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-57.png"
     ];
 
-
-
-
     constructor(keyboard) {
         super();
-        this.keyboard = keyboard;
-        console.log(this.keyboard);
 
-        this.loadImage("./assets/img/img_pollo_locco/img/2_character_pepe/2_walk/W-21.png");
+        this.keyboard = keyboard;
+
+        this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_IDLE);
@@ -73,26 +68,21 @@ class Character extends MoveableObject {
         this.height = 190;
         this.speed = 5;
 
-        this.applyGravity();    
+        this.applyGravity();
         this.animate();
-
-
     }
-
 
     animate() {
         setInterval(() => {
-            if (this.keyboard.RIGHT) {
+            if (this.keyboard.RIGHT && this.x < 2000) {
                 this.moveRight();
-
             }
 
-            if (this.keyboard.LEFT) {
+            if (this.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
-
             }
 
-            if (this.keyboard.SPACE) {
+            if (this.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
             }
 
@@ -101,48 +91,18 @@ class Character extends MoveableObject {
             }
         }, 1000 / 60);
 
-        // Animation
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
-
             } else if (this.keyboard.RIGHT || this.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
-
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }, 150);
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
