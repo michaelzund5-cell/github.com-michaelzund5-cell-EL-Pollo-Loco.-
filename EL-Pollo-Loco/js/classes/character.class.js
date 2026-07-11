@@ -50,10 +50,11 @@ class Character extends MoveableObject {
         "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-57.png"
     ];
 
-    constructor(keyboard) {
+    constructor(keyboard, levelEndX) {
         super();
 
         this.keyboard = keyboard;
+        this.levelEndX = levelEndX;
 
         this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
@@ -74,8 +75,8 @@ class Character extends MoveableObject {
 
     animate() {
         setInterval(() => {
-            if (this.keyboard.RIGHT && this.x < 2000) {
-                this.moveRight();
+            if (this.keyboard.RIGHT && this.x < this.levelEndX - this.width) {
+                this.moveRight();     
             }
 
             if (this.keyboard.LEFT && this.x > 0) {

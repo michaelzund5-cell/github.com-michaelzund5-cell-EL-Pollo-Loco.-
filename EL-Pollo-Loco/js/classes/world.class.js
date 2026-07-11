@@ -1,18 +1,13 @@
 class World {
-
     keyboard = new Keyboard();
-
-    character = new Character(this.keyboard);
-
+    levelEndX = 2880;
+    character = new Character(this.keyboard, this.levelEndX);
     camera_x = 0;
-    levelEndX = 3000;
-
     enemies = [
         new Chicken(),
         new Chicken(),
         new BabyChicken(),
         new Endboss()
-
     ];
 
     backgroundObjects = level1Backgrounds;
@@ -85,15 +80,12 @@ class World {
 
     }
     updateCamera() {
-        this.camera_x = -this.character.x + 100;
-         if (this.camera_x > 0) {
-            this.camera_x = 0;
-            
-        }
-        if (this.camera_x < -1500) {
-            this.camera_x = -1500;
-        }
+        const characterScreenPosition = 100;
+        const maxCameraOffset = this.levelEndX - this.canvas.width;
 
+        this.camera_x = -this.character.x + characterScreenPosition;
+        this.camera_x = Math.min(0, this.camera_x);
+        this.camera_x = Math.max(-maxCameraOffset, this.camera_x);
     }
 
 
