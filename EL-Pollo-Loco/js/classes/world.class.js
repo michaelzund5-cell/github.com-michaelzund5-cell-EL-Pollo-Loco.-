@@ -3,6 +3,7 @@ class World {
     levelEndX = 2880;
     character = new Character(this.keyboard, this.levelEndX);
     camera_x = 0;
+
     enemies = [
         new Chicken(),
         new Chicken(),
@@ -10,10 +11,10 @@ class World {
         new Endboss()
     ];
 
+    statusBar = new StatusBar();
+
     backgroundObjects = level1Backgrounds;
     clouds = level1Clouds;
-
-
 
     canvas;
     ctx;
@@ -24,8 +25,6 @@ class World {
         this.ctx = canvas.getContext("2d");
         this.draw();
     }
-
-
 
     draw() {
         this.clearCanvas();
@@ -41,6 +40,7 @@ class World {
 
         this.ctx.restore();
 
+        this.addToMap(this.statusBar);
         this.checkCollisions();
 
         this.animationFrameId = requestAnimationFrame(() => {
@@ -67,18 +67,19 @@ class World {
         object.draw(this.ctx);
     }
 
-
-
     checkCollisions() {
         this.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
-                console.log("Character hit! Energy: " + this.character.energy);
+                this.statusBar.setPercentage(this.character.energy);
+
+                console.log(
+                    "Character hit! Energy: " + this.character.energy
+                );
             }
         });
-
-
     }
+
     updateCamera() {
         const characterScreenPosition = 100;
         const maxCameraOffset = this.levelEndX - this.canvas.width;
@@ -87,6 +88,4 @@ class World {
         this.camera_x = Math.min(0, this.camera_x);
         this.camera_x = Math.max(-maxCameraOffset, this.camera_x);
     }
-
-
 }
