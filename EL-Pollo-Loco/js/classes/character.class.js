@@ -50,6 +50,8 @@ class Character extends MoveableObject {
         "./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-57.png"
     ];
 
+    coins = 0;
+
     constructor(keyboard, levelEndX) {
         super();
 
@@ -76,7 +78,7 @@ class Character extends MoveableObject {
     animate() {
         setInterval(() => {
             if (this.keyboard.RIGHT && this.x < this.levelEndX - this.width) {
-                this.moveRight();     
+                this.moveRight();
             }
 
             if (this.keyboard.LEFT && this.x > 0) {

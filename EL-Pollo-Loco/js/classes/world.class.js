@@ -44,12 +44,12 @@ class World {
 
         this.addToMap(this.statusBar);
         this.checkCollisions();
+        this.checkCoinCollisions();    // <- neu
 
         this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
         });
     }
-
     stop() {
         cancelAnimationFrame(this.animationFrameId);
         this.clearCanvas();
@@ -90,4 +90,16 @@ class World {
         this.camera_x = Math.min(0, this.camera_x);
         this.camera_x = Math.max(-maxCameraOffset, this.camera_x);
     }
+
+    checkCoinCollisions() {
+        this.coins = this.coins.filter((coin) => {
+            if (this.character.isColliding(coin)) {
+                this.character.coins++;
+                return false;
+            }
+
+            return true;
+        });
+    }
+
 }
