@@ -24,6 +24,16 @@ const level1Backgrounds = [
 
 const level1Clouds = [
     new Cloud()
+    
+
+];
+
+
+const level1Coins = [
+    new Coin(400, 250),
+    new Coin(700, 200),
+    new Coin(1000, 250),
+    new Coin(1300, 180)
 ];
 
 

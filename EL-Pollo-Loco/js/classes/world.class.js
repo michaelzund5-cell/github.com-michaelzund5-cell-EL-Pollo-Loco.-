@@ -10,6 +10,7 @@ class World {
         new BabyChicken(),
         new Endboss()
     ];
+    coins = level1Coins;
 
     statusBar = new StatusBar();
 
@@ -35,6 +36,7 @@ class World {
 
         this.addObjectsToMap(this.backgroundObjects);
         this.addObjectsToMap(this.clouds);
+        this.addObjectsToMap(this.coins);
         this.addToMap(this.character);
         this.addObjectsToMap(this.enemies);
 
