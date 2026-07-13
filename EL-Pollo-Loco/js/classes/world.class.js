@@ -10,7 +10,9 @@ class World {
         new BabyChicken(),
         new Endboss()
     ];
+
     coins = level1Coins;
+    bottles = level1Bottles;
 
     statusBar = new StatusBar();
 
@@ -37,26 +39,35 @@ class World {
         this.addObjectsToMap(this.backgroundObjects);
         this.addObjectsToMap(this.clouds);
         this.addObjectsToMap(this.coins);
+        this.addObjectsToMap(this.bottles);
         this.addToMap(this.character);
         this.addObjectsToMap(this.enemies);
 
         this.ctx.restore();
 
         this.addToMap(this.statusBar);
+
         this.checkCollisions();
-        this.checkCoinCollisions();    // <- neu
+        this.checkCoinCollisions();
+        this.checkBottleCollisions();
 
         this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
         });
     }
+
     stop() {
         cancelAnimationFrame(this.animationFrameId);
         this.clearCanvas();
     }
 
     clearCanvas() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(
+            0,
+            0,
+            this.canvas.width,
+            this.canvas.height
+        );
     }
 
     addObjectsToMap(objects) {
@@ -82,19 +93,15 @@ class World {
         });
     }
 
-    updateCamera() {
-        const characterScreenPosition = 100;
-        const maxCameraOffset = this.levelEndX - this.canvas.width;
-
-        this.camera_x = -this.character.x + characterScreenPosition;
-        this.camera_x = Math.min(0, this.camera_x);
-        this.camera_x = Math.max(-maxCameraOffset, this.camera_x);
-    }
-
     checkCoinCollisions() {
         this.coins = this.coins.filter((coin) => {
             if (this.character.isColliding(coin)) {
                 this.character.coins++;
+
+                console.log(
+                    "Coins: " + this.character.coins
+                );
+
                 return false;
             }
 
@@ -102,4 +109,38 @@ class World {
         });
     }
 
+    checkBottleCollisions() {
+        this.bottles = this.bottles.filter((bottle) => {
+            if (this.character.isColliding(bottle)) {
+                this.character.bottles++;
+
+                console.log(
+                    "Bottles: " + this.character.bottles
+                );
+
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    updateCamera() {
+        const characterScreenPosition = 100;
+        const maxCameraOffset =
+            this.levelEndX - this.canvas.width;
+
+        this.camera_x =
+            -this.character.x + characterScreenPosition;
+
+        this.camera_x = Math.min(
+            0,
+            this.camera_x
+        );
+
+        this.camera_x = Math.max(
+            -maxCameraOffset,
+            this.camera_x
+        );
+    }
 }

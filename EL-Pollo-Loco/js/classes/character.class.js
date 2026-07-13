@@ -51,6 +51,7 @@ class Character extends MoveableObject {
     ];
 
     coins = 0;
+    bottle = 0;
 
     constructor(keyboard, levelEndX) {
         super();
