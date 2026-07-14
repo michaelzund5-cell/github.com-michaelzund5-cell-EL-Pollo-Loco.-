@@ -11,6 +11,8 @@ class World {
         new Endboss()
     ];
 
+    throwableObjects = [];
+
     coins = level1Coins;
     bottles = level1Bottles;
 
@@ -26,6 +28,7 @@ class World {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
+        this.character.world = this;
         this.draw();
     }
 
@@ -40,6 +43,7 @@ class World {
         this.addObjectsToMap(this.clouds);
         this.addObjectsToMap(this.coins);
         this.addObjectsToMap(this.bottles);
+        this.addObjectsToMap(this.throwableObjects);
         this.addToMap(this.character);
         this.addObjectsToMap(this.enemies);
 
@@ -50,6 +54,7 @@ class World {
         this.checkCollisions();
         this.checkCoinCollisions();
         this.checkBottleCollisions();
+        this.checkThrowObjects();
 
         this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
@@ -123,6 +128,25 @@ class World {
 
             return true;
         });
+    }
+
+    checkThrowObjects() {
+        if (this.keyboard.THROW && this.character.bottles > 0) {
+            const bottle = new ThrowableObject(
+                this.character.x + 80,
+                this.character.y + 50
+            );
+
+            this.throwableObjects.push(bottle);
+            this.character.bottles--;
+
+            this.keyboard.THROW = false;
+
+            console.log(
+                "Bottle thrown! Remaining bottles: " +
+                this.character.bottles
+            );
+        }
     }
 
     updateCamera() {

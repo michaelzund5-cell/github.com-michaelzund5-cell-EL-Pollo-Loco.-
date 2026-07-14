@@ -51,7 +51,7 @@ class Character extends MoveableObject {
     ];
 
     coins = 0;
-    bottle = 0;
+    bottles = 0;
 
     constructor(keyboard, levelEndX) {
         super();
@@ -93,6 +93,9 @@ class Character extends MoveableObject {
             if (this.keyboard.H) {
                 this.hit();
             }
+
+        
+
         }, 1000 / 60);
 
         setInterval(() => {
@@ -109,4 +112,5 @@ class Character extends MoveableObject {
             }
         }, 150);
     }
+
 }
