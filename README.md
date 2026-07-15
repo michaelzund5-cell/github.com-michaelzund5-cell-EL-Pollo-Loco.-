@@ -17,13 +17,21 @@ Mein Vorgehen pro Feature: zuerst überlegen, wie ich es angehe und warum genau 
 - Kollisionserkennung zwischen Charakter und Gegnern
 - Hit-Cooldown: Charakter wird bei Gegnerkontakt nicht durchgehend, sondern nur alle 1 Sekunde beschädigt
 - Lebensanzeige (Statusbar) oben links, zeigt den Energiestand des Charakters in 20%-Schritten
+- Sammelbare Coins und Flaschen im Level platziert
+- Wurfsystem: Flaschen sammeln und auf Gegner werfen
+- Kampfsystem: Flaschentreffer und Sprung-auf-Gegner töten normale Chicken/BabyChicken
+- Seitliche Gegnerberührung zieht weiterhin Energie ab (mit Cooldown)
+- Eigener Endboss mit eigener Lebensanzeige, Hurt- und Death-Animation
+- Endboss verliert Energie durch Flaschentreffer
+- Character-Death-Animation läuft einmal durch und bleibt im letzten Bild stehen
+- Game-Over- und You-Win-Bildschirm
 
 ## Was als Nächstes kommt
 
-- Sammelbare Coins
-- Sammelbare Flaschen (Wurfwaffe gegen Gegner)
-- Game-Over-Bildschirm bei 0 Energie
-- Feinschliff: Mobile-Steuerung und Vollbild-Funktion (aktuell nur als leere Platzhalterdateien angelegt)
+- Feinschliff an der Endboss-Statusbar-Position
+- Mobile-Steuerung und Vollbild-Funktion (aktuell nur als leere Platzhalterdateien angelegt)
+- Code-Kommentare an Klassen und komplexeren Methoden ergänzen, damit sich das Projekt bei wachsender Größe weiterhin schnell lesen lässt
+- console.log-Reste im Produktivcode entfernen
 
 ## Technologien
 
