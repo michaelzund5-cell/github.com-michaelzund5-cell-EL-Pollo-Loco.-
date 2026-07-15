@@ -1,46 +1,65 @@
 class Chicken extends MoveableObject {
-
-
     IMAGES_WALKING = [
         "./assets/img/img_pollo_locco/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
         "./assets/img/img_pollo_locco/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
         "./assets/img/img_pollo_locco/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png"
     ];
 
+    IMAGE_DEAD =
+        "./assets/img/img_pollo_locco/img/3_enemies_chicken/chicken_normal/2_dead/dead.png";
+
+    isDefeated = false;
+    removeAt = 0;
 
     constructor() {
         super();
 
         this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
+        this.loadImageToCache(this.IMAGE_DEAD);
 
-        this.x = 500 + Math.random() * 500;
+        this.x = 500 + Math.random() * 1800;
         this.y = 360;
         this.width = 80;
         this.height = 80;
-
         this.speed = 0.15 + Math.random() * 0.5;
+        this.energy = 1;
 
         this.animate();
-
-
-
     }
 
     animate() {
         setInterval(() => {
-            this.moveLeft();
+            if (!this.isDefeated) {
+                this.moveLeft();
+            }
         }, 1000 / 60);
 
         setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);
+            this.updateAnimation();
         }, 200);
     }
 
-    moveLeft() {
-        this.x -= this.speed;
+    updateAnimation() {
+        if (this.isDefeated) {
+            this.img = this.imageCache[this.IMAGE_DEAD];
+        } else {
+            this.playAnimation(this.IMAGES_WALKING);
+        }
     }
 
+    defeat() {
+        if (this.isDefeated) return;
 
+        this.isDefeated = true;
+        this.energy = 0;
+        this.speed = 0;
+        this.removeAt = Date.now() + 700;
+        this.currentImage = 0;
+        this.img = this.imageCache[this.IMAGE_DEAD];
+    }
 
+    canBeRemoved() {
+        return this.isDefeated && Date.now() >= this.removeAt;
+    }
 }

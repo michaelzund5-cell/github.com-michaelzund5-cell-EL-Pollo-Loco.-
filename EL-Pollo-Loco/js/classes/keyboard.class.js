@@ -3,7 +3,6 @@ class Keyboard {
     RIGHT = false;
     SPACE = false; //akutuell wird nur die Leertaste gedrückt weiter taste können spätter ergänzt werden
     THROW = false;
-    H = false;
 
     constructor() {
         this.bindKeyPressEvents();
@@ -26,9 +25,6 @@ class Keyboard {
             if (event.key === "k") {
                 this.THROW = true;
             }
-            if (event.key === "h") {
-                this.H = true;
-            }
         });
 
         window.addEventListener("keyup", (event) => {
@@ -46,9 +42,6 @@ class Keyboard {
 
             if (event.key === "k") {
                 this.THROW = false;
-            }
-            if (event.key === "h") {
-                this.H = false;
             }
         });
     }

@@ -1,5 +1,4 @@
 class Character extends MoveableObject {
-
     IMAGES_WALKING = [
         "./assets/img/img_pollo_locco/img/2_character_pepe/2_walk/W-21.png",
         "./assets/img/img_pollo_locco/img/2_character_pepe/2_walk/W-22.png",
@@ -52,10 +51,10 @@ class Character extends MoveableObject {
 
     coins = 0;
     bottles = 0;
+    deathAnimationFinished = false;
 
     constructor(keyboard, levelEndX) {
         super();
-
         this.keyboard = keyboard;
         this.levelEndX = levelEndX;
 
@@ -78,6 +77,8 @@ class Character extends MoveableObject {
 
     animate() {
         setInterval(() => {
+            if (this.isDead()) return;
+
             if (this.keyboard.RIGHT && this.x < this.levelEndX - this.width) {
                 this.moveRight();
             }
@@ -89,18 +90,11 @@ class Character extends MoveableObject {
             if (this.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
             }
-
-            if (this.keyboard.H) {
-                this.hit();
-            }
-
-        
-
         }, 1000 / 60);
 
         setInterval(() => {
             if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
+                this.playDeathAnimationOnce();
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
@@ -113,4 +107,21 @@ class Character extends MoveableObject {
         }, 150);
     }
 
+    playDeathAnimationOnce() {
+        if (this.deathAnimationFinished) return;
+
+        const index = Math.min(this.currentImage, this.IMAGES_DEAD.length - 1);
+        const path = this.IMAGES_DEAD[index];
+        this.img = this.imageCache[path];
+
+        if (this.currentImage < this.IMAGES_DEAD.length - 1) {
+            this.currentImage++;
+        } else {
+            this.deathAnimationFinished = true;
+        }
+    }
+
+    bounceAfterStomp() {
+        this.speedY = -12;
+    }
 }

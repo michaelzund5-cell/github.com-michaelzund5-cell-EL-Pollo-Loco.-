@@ -35,25 +35,19 @@ class MoveableObject extends DrawableObject {
     }
 
     isDead() {
-        return this.energy == 0;
+        return this.energy <= 0;
     }
 
-    hit() {
-        if (!this.isHurt()) {
-            this.energy -= 5;
+    hit(damage = 5) {
+        if (this.isHurt() || this.isDead()) return false;
 
-            if (this.energy < 0) {
-                this.energy = 0;
-            }
-
-            this.lastHit = new Date().getTime();
-        }
+        this.energy = Math.max(0, this.energy - damage);
+        this.lastHit = Date.now();
+        return true;
     }
 
     isHurt() {
-        let timepassed = new Date().getTime() - this.lastHit;
-        timepassed = timepassed / 1000;
-        return timepassed < 1;
+        return Date.now() - this.lastHit < 800;
     }
 
     isColliding(object) {

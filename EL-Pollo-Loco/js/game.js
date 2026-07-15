@@ -38,6 +38,7 @@ function bindButtonEvents() {
 
 function startGame() {
     hideStartScreen();
+    hideEndScreen();
 
     world = new World(canvas);
 
@@ -49,6 +50,7 @@ function restartGame() {
         world = null;
     }
 
+    hideEndScreen();
     showStartScreen();
 
     console.log("Restart Game geklickt");
@@ -97,3 +99,8 @@ function showStartScreen() {
     document.getElementById("start-screen").classList.remove("hidden");
 }
 
+
+function hideEndScreen() {
+    const endScreen = document.getElementById("end-screen");
+    if (endScreen) endScreen.classList.add("hidden");
+}

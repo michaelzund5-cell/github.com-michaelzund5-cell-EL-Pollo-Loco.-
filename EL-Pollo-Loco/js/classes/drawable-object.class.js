@@ -12,6 +12,12 @@ class DrawableObject {
         this.img.src = path;
     }
 
+    loadImageToCache(path) {
+        const img = new Image();
+        img.src = path;
+        this.imageCache[path] = img;
+    }
+
     loadImages(arr) {
         arr.forEach((path) => {
             let img = new Image();
