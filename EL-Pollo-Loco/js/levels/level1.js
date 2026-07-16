@@ -1,46 +1,54 @@
+function createLevel1() {
+    const endX = 2880;
 
-const level1Backgrounds = [
-    // Abschnitt 1
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/air.png", 0),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/3_third_layer/1.png", 0),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/2_second_layer/1.png", 0),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/1_first_layer/1.png", 0),
-    // Abschnitt 2
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/air.png", 720),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/3_third_layer/2.png", 720),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/2_second_layer/2.png", 720),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/1_first_layer/2.png", 720), 
-    // Abschnitt 3
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/air.png", 1440),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/3_third_layer/1.png", 1440),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/2_second_layer/1.png", 1440),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/1_first_layer/1.png", 1440), 
-    // Abschnitt 4
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/air.png", 2160),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/3_third_layer/2.png", 2160),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/2_second_layer/2.png", 2160),
-    new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/1_first_layer/2.png", 2160)
-];
+    return new Level({
+        endX,
+        backgroundObjects: createBackgrounds(),
+        clouds: [
+            new Cloud(150, 1),
+            new Cloud(1150, 2),
+            new Cloud(2250, 1)
+        ],
+        enemies: [
+            new Chicken(650),
+            new BabyChicken(1050),
+            new Chicken(1450),
+            new BabyChicken(1850),
+            new Chicken(2150),
+            new Endboss()
+        ],
+        coins: [
+            new Coin(400, 250),
+            new Coin(700, 200),
+            new Coin(1000, 250),
+            new Coin(1300, 180),
+            new Coin(1650, 240),
+            new Coin(2050, 190)
+        ],
+        bottles: [
+            new Bottle(500, 330),
+            new Bottle(850, 330),
+            new Bottle(1200, 330),
+            new Bottle(1700, 330),
+            new Bottle(2200, 330)
+        ]
+    });
+}
 
-const level1Clouds = [
-    new Cloud()
-    
+function createBackgrounds() {
+    const backgrounds = [];
 
-];
+    for (let section = 0; section < 4; section++) {
+        const x = section * 720;
+        const layerNumber = section % 2 === 0 ? 1 : 2;
 
+        backgrounds.push(
+            new BackgroundObject("./assets/img/img_pollo_locco/img/5_background/layers/air.png", x),
+            new BackgroundObject(`./assets/img/img_pollo_locco/img/5_background/layers/3_third_layer/${layerNumber}.png`, x),
+            new BackgroundObject(`./assets/img/img_pollo_locco/img/5_background/layers/2_second_layer/${layerNumber}.png`, x),
+            new BackgroundObject(`./assets/img/img_pollo_locco/img/5_background/layers/1_first_layer/${layerNumber}.png`, x)
+        );
+    }
 
-const level1Coins = [
-    new Coin(400, 250),
-    new Coin(700, 200),
-    new Coin(1000, 250),
-    new Coin(1300, 180)
-];
-
-const level1Bottles = [
-    new Bottle(500, 330),
-    new Bottle(850, 330),
-    new Bottle(1200, 330),
-    new Bottle(1700, 330)
-];
-
-
+    return backgrounds;
+}

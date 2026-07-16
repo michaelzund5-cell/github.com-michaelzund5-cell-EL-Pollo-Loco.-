@@ -1,48 +1,39 @@
 class Keyboard {
     LEFT = false;
     RIGHT = false;
-    SPACE = false; //akutuell wird nur die Leertaste gedrückt weiter taste können spätter ergänzt werden
+    SPACE = false;
     THROW = false;
 
     constructor() {
-        this.bindKeyPressEvents();
+        this.keyDownHandler = (event) => this.handleKey(event, true);
+        this.keyUpHandler = (event) => this.handleKey(event, false);
+        window.addEventListener("keydown", this.keyDownHandler);
+        window.addEventListener("keyup", this.keyUpHandler);
     }
 
-    bindKeyPressEvents() {
-        window.addEventListener("keydown", (event) => {
-            if (event.key === "ArrowLeft" || event.key === "a") {
-                this.LEFT = true;
-            }
+    handleKey(event, isPressed) {
+        const key = event.key.toLowerCase();
 
-            if (event.key === "ArrowRight" || event.key === "d") {
-                this.RIGHT = true;
-            }
+        if (key === "arrowleft" || key === "a") this.LEFT = isPressed;
+        if (key === "arrowright" || key === "d") this.RIGHT = isPressed;
+        if (key === " ") this.SPACE = isPressed;
+        if (key === "k") this.THROW = isPressed;
 
-            if (event.key === " ") {
-                this.SPACE = true;
-            }
+        if (["arrowleft", "arrowright", " "].includes(key)) {
+            event.preventDefault();
+        }
+    }
 
-            if (event.key === "k") {
-                this.THROW = true;
-            }
-        });
+    reset() {
+        this.LEFT = false;
+        this.RIGHT = false;
+        this.SPACE = false;
+        this.THROW = false;
+    }
 
-        window.addEventListener("keyup", (event) => {
-            if (event.key === "ArrowLeft" || event.key === "a") {
-                this.LEFT = false;
-            }
-
-            if (event.key === "ArrowRight" || event.key === "d") {
-                this.RIGHT = false;
-            }
-
-            if (event.key === " ") {
-                this.SPACE = false;
-            }
-
-            if (event.key === "k") {
-                this.THROW = false;
-            }
-        });
+    destroy() {
+        window.removeEventListener("keydown", this.keyDownHandler);
+        window.removeEventListener("keyup", this.keyUpHandler);
+        this.reset();
     }
 }

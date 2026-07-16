@@ -10,34 +10,56 @@ class Chicken extends MoveableObject {
 
     isDefeated = false;
     removeAt = 0;
+    leftBorder = 100;
+    rightBorder = 0;
 
-    constructor() {
+    constructor(x = 500 + Math.random() * 1800, leftBorder = 100, rightBorder = x) {
         super();
 
+        this.imageFacesRight = false;
         this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImageToCache(this.IMAGE_DEAD);
 
-        this.x = 500 + Math.random() * 1800;
+        this.x = x;
         this.y = 360;
         this.width = 80;
         this.height = 80;
         this.speed = 0.15 + Math.random() * 0.5;
         this.energy = 1;
 
+        this.leftBorder = Math.max(100, leftBorder);
+        this.rightBorder = Math.max(this.leftBorder + 50, rightBorder);
+
+        // Chicken-Bilder schauen von Haus aus nach links.
+        // Deshalb startet das Chicken ohne Spiegelung Richtung Character-Start.
+        this.otherDirection = true;
+
         this.animate();
     }
 
     animate() {
-        setInterval(() => {
-            if (!this.isDefeated) {
-                this.moveLeft();
-            }
+        this.setGameInterval(() => {
+            if (!this.isDefeated) this.patrol();
         }, 1000 / 60);
 
-        setInterval(() => {
-            this.updateAnimation();
-        }, 200);
+        this.setGameInterval(() => this.updateAnimation(), 200);
+    }
+
+    patrol() {
+        if (this.x <= this.leftBorder) {
+            this.x = this.leftBorder;
+            this.otherDirection = false;
+        } else if (this.x >= this.rightBorder) {
+            this.x = this.rightBorder;
+            this.otherDirection = true;
+        }
+
+        if (this.otherDirection) {
+            this.moveLeft();
+        } else {
+            this.moveRight();
+        }
     }
 
     updateAnimation() {

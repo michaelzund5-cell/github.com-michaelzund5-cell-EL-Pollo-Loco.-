@@ -17,8 +17,9 @@ class ThrowableObject extends MoveableObject {
 
     isSplashing = false;
     markedForRemoval = false;
+    direction = 1;
 
-    constructor(x, y) {
+    constructor(x, y, otherDirection = false) {
         super();
 
         this.loadImage(this.IMAGES_ROTATION[0]);
@@ -29,6 +30,9 @@ class ThrowableObject extends MoveableObject {
         this.y = y;
         this.width = 60;
         this.height = 60;
+        this.otherDirection = otherDirection;
+        this.direction = otherDirection ? -1 : 1;
+        this.groundY = 360;
 
         this.throw();
         this.animate();
@@ -38,15 +42,16 @@ class ThrowableObject extends MoveableObject {
         this.speedY = -15;
         this.applyGravity();
 
-        setInterval(() => {
-            if (!this.isSplashing && !this.markedForRemoval) {
-                this.x += 10;
-            }
+        this.setGameInterval(() => {
+            if (this.isSplashing || this.markedForRemoval) return;
+
+            this.x += 10 * this.direction;
+            if (!this.isAboveGround() && this.speedY === 0) this.splash();
         }, 1000 / 60);
     }
 
     animate() {
-        setInterval(() => {
+        this.setGameInterval(() => {
             if (this.markedForRemoval) return;
 
             if (this.isSplashing) {
@@ -62,7 +67,7 @@ class ThrowableObject extends MoveableObject {
 
         this.isSplashing = true;
         this.speedY = 0;
-        this.currentImage = 0;
+        this.resetAnimation();
     }
 
     playSplashAnimationOnce() {

@@ -8,8 +8,8 @@ class BabyChicken extends Chicken {
     IMAGE_DEAD =
         "./assets/img/img_pollo_locco/img/3_enemies_chicken/chicken_small/2_dead/dead.png";
 
-    constructor() {
-        super();
+    constructor(x = 850 + Math.random() * 1200) {
+        super(x, 100, x);
 
         this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);

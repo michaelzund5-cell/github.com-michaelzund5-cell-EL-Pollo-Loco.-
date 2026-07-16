@@ -10,6 +10,8 @@
     <script src="./js/classes/moveable-object.class.js" defer></script>
 
     <script src="./js/classes/status-bar.class.js" defer></script>
+    <script src="./js/classes/coin-status-bar.class.js" defer></script>
+    <script src="./js/classes/bottle-status-bar.class.js" defer></script>
     <script src="./js/classes/endboss-status-bar.class.js" defer></script>
     <script src="./js/classes/background-object.class.js" defer></script>
     <script src="./js/classes/cloud.class.js" defer></script>
@@ -31,28 +33,38 @@
     <link rel="icon" href="./assets/img/img_pollo_locco/img/2_character_pepe/5_dead/D-51.png" type="image/png">
 </head>
 
-<body onload="init()">-.
+<body onload="init()">
     <main class="page">
         <h1 class="game-title">El Pollo Loco</h1>
 
         <section class="game-wrapper">
             <canvas id="canvas" width="720" height="480"></canvas>
 
-            <section id="start-screen" class="screen">
-
-                <button id="start-game-btn" type="button">Start Game</button>
+            <section id="start-screen" class="screen start-screen">
+                <div class="screen-content">
+                    <button id="start-game-btn" type="button">Start Game</button>
+                </div>
             </section>
 
             <section id="end-screen" class="screen hidden">
+                <div class="screen-content">
+                    <h2 id="end-screen-title">Game Over</h2>
+                    <button type="button" onclick="restartGame()">Back to Start</button>
+                </div>
+            </section>
 
-                <h2 id="end-screen-title">Game Over</h2>
+            <section id="pause-overlay" class="screen pause-overlay hidden">
+                <div class="screen-content">
+                    <h2>Paused</h2>
+                    <button type="button" onclick="togglePause()">Resume</button>
+                </div>
             </section>
 
             <nav class="game-actions" aria-label="Game actions">
                 <button id="fullscreen-btn" type="button">Fullscreen</button>
                 <button id="restart-btn" type="button">Restart</button>
                 <button id="mute-btn" type="button">Mute</button>
-                <button id="pause-btn" type="button">pause</button>
+                <button id="pause-btn" type="button">Pause</button>
             </nav>
 
             <section class="mobile-controls" aria-label="Mobile controls">

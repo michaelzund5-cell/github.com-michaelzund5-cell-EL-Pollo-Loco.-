@@ -1,94 +1,110 @@
 let canvas;
 let world;
-let isPaused = false;
 let isMuted = false;
+window.isGamePaused = false;
 
 function init() {
-    console.log("game.js geladen");
-    console.log("init gestartet");
-
     canvas = document.getElementById("canvas");
-
     bindButtonEvents();
-
-
+    bindMobileControls();
 }
 
 function bindButtonEvents() {
-    document
-        .getElementById("fullscreen-btn")
-        .addEventListener("click", fullscreenGame);
-
-    document
-        .getElementById("restart-btn")
-        .addEventListener("click", restartGame);
-
-    document
-        .getElementById("mute-btn")
-        .addEventListener("click", toggleMute);
-
-    document
-        .getElementById("start-game-btn")
-        .addEventListener("click", startGame);
-
-    document
-        .getElementById("pause-btn")
-        .addEventListener("click", pauseGame);
+    document.getElementById("fullscreen-btn").addEventListener("click", fullscreenGame);
+    document.getElementById("restart-btn").addEventListener("click", restartGame);
+    document.getElementById("mute-btn").addEventListener("click", toggleMute);
+    document.getElementById("start-game-btn").addEventListener("click", startGame);
+    document.getElementById("pause-btn").addEventListener("click", togglePause);
 }
 
 function startGame() {
+    if (world) world.stop();
+
+    window.isGamePaused = false;
+    updatePauseButton();
     hideStartScreen();
     hideEndScreen();
-
+    hidePauseOverlay();
     world = new World(canvas);
-
-    console.log("Start Game geklickt");
 }
+
 function restartGame() {
     if (world) {
         world.stop();
         world = null;
     }
 
+    window.isGamePaused = false;
+    updatePauseButton();
     hideEndScreen();
+    hidePauseOverlay();
     showStartScreen();
-
-    console.log("Restart Game geklickt");
-}
-
-function clearCanvas() {
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function fullscreenGame() {
-    if (canvas.requestFullscreen) {
-        canvas.requestFullscreen();
-    } else if (canvas.webkitRequestFullscreen) {
-        canvas.webkitRequestFullscreen();
-    } else if (canvas.msRequestFullscreen) {
-        canvas.msRequestFullscreen();
-    }
+    const gameWrapper = document.querySelector(".game-wrapper");
+    const target = gameWrapper || canvas;
 
-    console.log("Fullscreen Game geklickt");
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else if (target.requestFullscreen) {
+        target.requestFullscreen();
+    }
 }
 
 function toggleMute() {
     isMuted = !isMuted;
-
-    const muteButton = document.getElementById("mute-btn");
-    muteButton.textContent = isMuted ? "Unmute" : "Mute";
-
-    console.log("Mute:", isMuted);
+    document.getElementById("mute-btn").textContent = isMuted ? "Unmute" : "Mute";
 }
 
-function pauseGame() {
-    isPaused = !isPaused;
+function togglePause() {
+    if (!world || world.gameFinished) return;
 
+    window.isGamePaused = !window.isGamePaused;
+    world.keyboard.reset();
+    updatePauseButton();
+
+    if (window.isGamePaused) {
+        showPauseOverlay();
+    } else {
+        hidePauseOverlay();
+    }
+}
+
+function updatePauseButton() {
     const pauseButton = document.getElementById("pause-btn");
-    pauseButton.textContent = isPaused ? "Resume" : "Pause";
+    pauseButton.textContent = window.isGamePaused ? "Resume" : "Pause";
+}
 
-    console.log("Pause:", isPaused);
+function bindMobileControls() {
+    bindHoldButton("btn-left", "LEFT");
+    bindHoldButton("btn-right", "RIGHT");
+    bindHoldButton("btn-jump", "SPACE");
+    bindHoldButton("btn-throw", "THROW");
+}
+
+function bindHoldButton(buttonId, keyName) {
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+
+    const setKey = (value) => {
+        if (!world?.keyboard) return;
+        world.keyboard[keyName] = value;
+    };
+
+    ["pointerdown", "touchstart"].forEach((eventName) => {
+        button.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            setKey(true);
+        });
+    });
+
+    ["pointerup", "pointercancel", "pointerleave", "touchend"].forEach((eventName) => {
+        button.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            setKey(false);
+        });
+    });
 }
 
 function hideStartScreen() {
@@ -99,8 +115,17 @@ function showStartScreen() {
     document.getElementById("start-screen").classList.remove("hidden");
 }
 
-
 function hideEndScreen() {
     const endScreen = document.getElementById("end-screen");
-    if (endScreen) endScreen.classList.add("hidden");
+    if (!endScreen) return;
+    endScreen.classList.add("hidden");
+    endScreen.classList.remove("won", "lost");
+}
+
+function showPauseOverlay() {
+    document.getElementById("pause-overlay")?.classList.remove("hidden");
+}
+
+function hidePauseOverlay() {
+    document.getElementById("pause-overlay")?.classList.add("hidden");
 }

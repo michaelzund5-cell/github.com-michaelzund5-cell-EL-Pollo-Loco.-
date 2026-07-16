@@ -7,6 +7,13 @@ class DrawableObject {
     imageCache = {};
     currentImage = 0;
 
+    // Einheitliche Bedeutung: true = Objekt bewegt/schaut nach links.
+    otherDirection = false;
+
+    // Die meisten Pepe-Bilder schauen standardmäßig nach rechts.
+    // Chicken und Endboss überschreiben diesen Wert mit false.
+    imageFacesRight = true;
+
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
@@ -18,33 +25,31 @@ class DrawableObject {
         this.imageCache[path] = img;
     }
 
-    loadImages(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
+    loadImages(paths) {
+        paths.forEach((path) => this.loadImageToCache(path));
     }
 
     draw(ctx) {
-        ctx.drawImage(
-            this.img,
-            this.x,
-            this.y,
-            this.width,
-            this.height
-        );
+        if (!(this.img instanceof HTMLImageElement)) return;
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
-    
+
     playAnimation(images) {
-        let index = this.currentImage % images.length;
-        let path = images[index];
+        if (!images?.length) return;
 
-        this.img = this.imageCache[path];
-        this.currentImage++;
+        const index = this.currentImage % images.length;
+        const path = images[index];
+        const nextImage = this.imageCache[path];
 
-        if (this.currentImage >= images.length) {
-            this.currentImage = 0;
-        }
+        if (nextImage) this.img = nextImage;
+        this.currentImage = (this.currentImage + 1) % images.length;
+    }
+
+    resetAnimation() {
+        this.currentImage = 0;
+    }
+
+    shouldFlipImage() {
+        return this.imageFacesRight ? this.otherDirection : !this.otherDirection;
     }
 }

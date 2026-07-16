@@ -23,8 +23,9 @@ class Endboss extends Chicken {
     deathAnimationFinished = false;
 
     constructor() {
-        super();
+        super(2500, 2250, 2680);
 
+        this.imageFacesRight = false;
         this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_HURT);
@@ -37,6 +38,9 @@ class Endboss extends Chicken {
         this.speed = 0.35;
         this.energy = 100;
         this.lastHit = 0;
+        this.leftBorder = 2250;
+        this.rightBorder = 2680;
+        this.otherDirection = true;
     }
 
     updateAnimation() {
@@ -54,7 +58,7 @@ class Endboss extends Chicken {
 
         this.energy = Math.max(0, this.energy - damage);
         this.lastHit = Date.now();
-        this.currentImage = 0;
+        this.resetAnimation();
 
         if (this.energy === 0) {
             this.isDefeated = true;
