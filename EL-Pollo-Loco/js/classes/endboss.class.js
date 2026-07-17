@@ -38,8 +38,8 @@ class Endboss extends Chicken {
         this.speed = 0.35;
         this.energy = 100;
         this.lastHit = 0;
-        this.leftBorder = 2250;
-        this.rightBorder = 2680;
+        this.leftBorder = 100;
+        this.rightBorder = 2880;
         this.otherDirection = true;
     }
 

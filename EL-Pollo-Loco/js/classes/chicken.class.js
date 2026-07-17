@@ -13,7 +13,7 @@ class Chicken extends MoveableObject {
     leftBorder = 100;
     rightBorder = 0;
 
-    constructor(x = 500 + Math.random() * 1800, leftBorder = 100, rightBorder = x) {
+    constructor(x = 500 + Math.random() * 1800, leftBorder = 100, rightBorder = 2880) {
         super();
 
         this.imageFacesRight = false;
