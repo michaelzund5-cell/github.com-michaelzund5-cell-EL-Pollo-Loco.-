@@ -11,6 +11,7 @@ class World {
         this.cameraX = 0;
         this.enemies = this.level.enemies;
         this.endboss = this.enemies.find((enemy) => enemy instanceof Endboss);
+        if (this.endboss) this.endboss.world = this;
         this.backgroundObjects = this.level.backgroundObjects;
         this.clouds = this.level.clouds;
         this.coins = this.level.coins;
@@ -133,6 +134,7 @@ class World {
                 this.character.bounceAfterStomp();
             } else if (this.character.hit()) {
                 this.statusBar.setPercentage(this.character.energy);
+                this.character.bounceAfterHit(enemy.x < this.character.x);
             }
         });
     }
@@ -193,9 +195,19 @@ class World {
     }
 
     checkThrowObjects() {
-        if (!this.keyboard.THROW || this.character.bottles <= 0 || this.character.isDead()) {
+        const now = Date.now();
+        const throwCooldown = 700;
+
+        if (
+            !this.keyboard.THROW ||
+            this.character.bottles <= 0 ||
+            this.character.isDead() ||
+            (this.lastThrowTime && now - this.lastThrowTime < throwCooldown)
+        ) {
             return;
         }
+
+        this.lastThrowTime = now;
 
         const startX = this.character.otherDirection
             ? this.character.x - 20

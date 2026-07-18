@@ -42,8 +42,7 @@ function restartGame() {
 }
 
 function fullscreenGame() {
-    const gameWrapper = document.querySelector(".game-wrapper");
-    const target = gameWrapper || canvas;
+    const target = document.querySelector(".page") || document.documentElement;
 
     if (document.fullscreenElement) {
         document.exitFullscreen();

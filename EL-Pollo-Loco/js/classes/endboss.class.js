@@ -21,6 +21,8 @@ class Endboss extends Chicken {
     energy = 100;
     isDefeated = false;
     deathAnimationFinished = false;
+    isTriggered = false;
+    world = null;
 
     constructor() {
         super(2500, 2250, 2680);
@@ -35,12 +37,32 @@ class Endboss extends Chicken {
         this.y = 45;
         this.width = 250;
         this.height = 400;
-        this.speed = 0.35;
+        this.speed = 0;
+        this.triggeredSpeed = 0.9;
+        this.alertRange = 500;
         this.energy = 100;
         this.lastHit = 0;
         this.leftBorder = 100;
         this.rightBorder = 2880;
         this.otherDirection = true;
+    }
+
+    patrol() {
+        if (this.isDefeated) return;
+
+        if (!this.isTriggered) {
+            const character = this.world?.character;
+            const distanceToCharacter = character ? Math.abs(character.x - this.x) : Infinity;
+
+            if (distanceToCharacter < this.alertRange) {
+                this.isTriggered = true;
+                this.speed = this.triggeredSpeed;
+            } else {
+                return;
+            }
+        }
+
+        super.patrol();
     }
 
     updateAnimation() {

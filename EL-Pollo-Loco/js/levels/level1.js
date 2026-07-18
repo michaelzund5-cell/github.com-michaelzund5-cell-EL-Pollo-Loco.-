@@ -26,11 +26,11 @@ function createLevel1() {
             new Coin(2050, 190)
         ],
         bottles: [
-            new Bottle(500, 330),
-            new Bottle(850, 330),
-            new Bottle(1200, 330),
-            new Bottle(1700, 330),
-            new Bottle(2200, 330)
+            new Bottle(500, 370),
+            new Bottle(850, 370),
+            new Bottle(1200, 370),
+            new Bottle(1700, 370),
+            new Bottle(2200, 370)
         ]
     });
 }

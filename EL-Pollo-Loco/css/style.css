@@ -7,8 +7,21 @@
 body {
     min-height: 100vh;
     font-family: Arial, sans-serif;
-    background: linear-gradient(180deg, #3b1f0f, #120804);
+    background-image: url("../assets/img/img_pollo_locco/img/9_intro_outro_screens/start/startscreen_1.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: #ffffff;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(6px);
+    background: rgba(20, 10, 4, 0.45);
+    z-index: -1;
 }
 
 button {
@@ -67,6 +80,48 @@ canvas {
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.45);
+    background-size: cover;
+    background-position: center;
+}
+
+.start-screen {
+    background-image: url("../assets/img/img_pollo_locco/img/9_intro_outro_screens/start/startscreen_1.png");
+    background-color: #000000;
+    background-position: center;
+    background-size: cover;
+}
+
+.start-screen .screen-content {
+    background: rgba(20, 10, 4, 0.55);
+    border-radius: 16px;
+    padding: 24px 32px;
+    backdrop-filter: blur(2px);
+}
+
+#end-screen.lost {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
+        url("../assets/img/img_pollo_locco/img/You won, you lost/Game Over.png");
+    background-color: #1a0d05;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#end-screen.won {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+        url("../assets/img/img_pollo_locco/img/You won, you lost/You Win A.png");
+    background-color: #1a0d05;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#end-screen-title {
+    display: none;
+}
+
+.screen-content button {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
 }
 
 .hidden {
@@ -106,8 +161,18 @@ canvas {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 16px;
-    font-size: 16px;
+    gap: 12px;
+    font-size: 15px;
+}
+
+.controls-info span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(20, 10, 4, 0.75);
+    border-radius: 10px;
+    padding: 8px 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 
 kbd {
@@ -118,27 +183,173 @@ kbd {
     font-weight: 700;
 }
 
+.game-actions button {
+    padding: 8px 12px;
+    font-size: 14px;
+    background: rgba(20, 10, 4, 0.75);
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.game-actions button:hover {
+    background: rgba(40, 22, 10, 0.85);
+    filter: none;
+}
+
+#start-game-btn {
+    background: rgba(20, 10, 4, 0.75);
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    padding: 14px 28px;
+    font-size: 18px;
+}
+
+#start-game-btn:hover {
+    background: rgba(40, 22, 10, 0.85);
+    filter: none;
+}
+
 @media (max-width: 760px) {
     .page {
-        padding: 12px;
-        gap: 16px;
+        padding: 8px;
+        gap: 10px;
+        justify-content: flex-start;
+    }
+
+    .game-title {
+        font-size: clamp(22px, 6vw, 32px);
+    }
+
+    .game-wrapper {
+        width: 100%;
+        border-width: 2px;
+        border-radius: 10px;
     }
 
     .game-actions {
-        top: 8px;
-        right: 8px;
+        top: 6px;
+        right: 6px;
+        gap: 6px;
     }
 
     .game-actions button {
-        padding: 7px 9px;
-        font-size: 12px;
+        padding: 6px 8px;
+        font-size: 11px;
     }
 
     .mobile-controls {
         display: flex;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+    }
+
+    .mobile-control-group button {
+        padding: 14px 18px;
+        font-size: 14px;
+        opacity: 0.85;
     }
 
     .controls-info {
-        font-size: 14px;
+        display: none;
+    }
+
+    #end-screen-title {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-wrapper {
+        aspect-ratio: 4 / 3;
+    }
+
+    .mobile-control-group button {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+}
+
+.page:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../assets/img/img_pollo_locco/img/9_intro_outro_screens/start/startscreen_1.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.page:fullscreen::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(6px);
+    background: rgba(20, 10, 4, 0.45);
+    z-index: -1;
+}
+
+.page:fullscreen .game-title {
+    display: block;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 400;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.page:fullscreen .controls-info {
+    display: flex;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.page:fullscreen .game-wrapper {
+    width: auto;
+    height: 82vh;
+    max-width: 92vw;
+    aspect-ratio: 3 / 2;
+}
+
+.page:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../assets/img/img_pollo_locco/img/9_intro_outro_screens/start/startscreen_1.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.page:-webkit-full-screen .game-wrapper {
+    width: auto;
+    height: 82vh;
+    max-width: 92vw;
+    aspect-ratio: 3 / 2;
+}
+    .page {
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .game-title {
+        font-size: 18px;
+    }
+
+    .game-wrapper {
+        max-height: 92vh;
+        width: auto;
+        height: 92vh;
+        aspect-ratio: 3 / 2;
+    }
+
+    .controls-info {
+        display: none;
     }
 }
