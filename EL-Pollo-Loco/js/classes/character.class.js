@@ -158,10 +158,12 @@ class Character extends MoveableObject {
     bounceAfterStomp() {
         this.speedY = -12;
     }
-
     bounceAfterHit(pushRight) {
-        const knockback = 30;
+        const knockback = 12;
         this.x += pushRight ? knockback : -knockback;
         this.x = Math.max(0, Math.min(this.x, this.levelEndX - this.width));
     }
+
+
+
 }

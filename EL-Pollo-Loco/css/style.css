@@ -28,8 +28,8 @@ button {
     border: none;
     border-radius: 10px;
     padding: 12px 18px;
-    background: #ffb703;
-    color: #2b1608;
+    background: rgba(20, 10, 4, 0.45);
+    color: #ffffff;
     font-weight: 700;
     cursor: pointer;
 }
@@ -92,7 +92,7 @@ canvas {
 }
 
 .start-screen .screen-content {
-    background: rgba(20, 10, 4, 0.55);
+
     border-radius: 16px;
     padding: 24px 32px;
     backdrop-filter: blur(2px);
@@ -333,23 +333,23 @@ kbd {
     max-width: 92vw;
     aspect-ratio: 3 / 2;
 }
-    .page {
-        padding: 4px;
-        gap: 4px;
-    }
 
-    .game-title {
-        font-size: 18px;
-    }
+.page {
+    padding: 4px;
+    gap: 4px;
+}
 
-    .game-wrapper {
-        max-height: 92vh;
-        width: auto;
-        height: 92vh;
-        aspect-ratio: 3 / 2;
-    }
+.game-title {
+    font-size: 18px;
+}
 
-    .controls-info {
-        display: none;
-    }
+.game-wrapper {
+    max-height: 92vh;
+    width: auto;
+    height: 92vh;
+    aspect-ratio: 3 / 2;
+}
+
+.controls-info {
+    display: none;
 }
