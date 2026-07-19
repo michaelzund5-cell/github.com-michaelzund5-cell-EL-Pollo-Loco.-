@@ -134,6 +134,7 @@ canvas {
     right: 12px;
     display: flex;
     gap: 8px;
+    z-index: 20;
 }
 
 .game-actions button {
@@ -149,6 +150,7 @@ canvas {
     display: none;
     justify-content: space-between;
     pointer-events: none;
+    z-index: 20;
 }
 
 .mobile-control-group {
@@ -240,7 +242,7 @@ kbd {
     }
 
     .mobile-controls {
-        display: flex;
+        display: none;
         left: 8px;
         right: 8px;
         bottom: 8px;
@@ -334,22 +336,105 @@ kbd {
     aspect-ratio: 3 / 2;
 }
 
-.page {
-    padding: 4px;
-    gap: 4px;
+@media (orientation: landscape) and (max-height: 480px) {
+    .page {
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .game-title {
+        font-size: 18px;
+    }
+
+    .game-wrapper {
+        max-height: 92vh;
+        width: auto;
+        height: 92vh;
+        aspect-ratio: 3 / 2;
+    }
+
+    .controls-info {
+        display: none;
+    }
 }
 
-.game-title {
-    font-size: 18px;
-}
+/* --- Rotate-Device-Overlay --- */
 
-.game-wrapper {
-    max-height: 92vh;
-    width: auto;
-    height: 92vh;
-    aspect-ratio: 3 / 2;
-}
-
-.controls-info {
+.rotate-overlay {
     display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #120804;
+    color: #ffffff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.rotate-content {
+    padding: 24px;
+}
+
+.rotate-icon {
+    font-size: 48px;
+    display: inline-block;
+    animation: rotate-hint 1.6s ease-in-out infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes rotate-hint {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+}
+
+@media (max-width: 900px) and (orientation: portrait) {
+    .rotate-overlay {
+        display: flex;
+    }
+}
+
+/* --- Impressum --- */
+
+.imprint-link {
+    margin-top: 10px;
+    background: transparent;
+    color: #ffffff;
+    text-decoration: underline;
+    font-size: 13px;
+    padding: 4px 8px;
+    opacity: 0.8;
+}
+
+.imprint-link:hover {
+    opacity: 1;
+    background: transparent;
+}
+
+.imprint-content {
+    max-width: 420px;
+    text-align: left;
+    line-height: 1.6;
+}
+
+.page:fullscreen .imprint-link,
+.page:-webkit-full-screen .imprint-link {
+    display: block;
+    position: absolute;
+    bottom: 20px;
+    right: 24px;
+}
+
+/* --- Fullscreen-Button aktiver Zustand --- */
+
+#fullscreen-btn.active {
+    background: rgba(34, 139, 34, 0.85);
+}
+
+/* --- Mobile-Controls nur bei echten Touch-Geräten mit schmalem Screen --- */
+
+@media (max-width: 760px) and (pointer: coarse) {
+    .mobile-controls {
+        display: flex;
+    }
 }

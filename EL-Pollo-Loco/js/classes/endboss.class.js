@@ -38,7 +38,7 @@ class Endboss extends Chicken {
         this.width = 250;
         this.height = 400;
         this.speed = 0;
-        this.triggeredSpeed = 0.9;
+        this.triggeredSpeed = 2.6;
         this.alertRange = 500;
         this.energy = 100;
         this.lastHit = 0;

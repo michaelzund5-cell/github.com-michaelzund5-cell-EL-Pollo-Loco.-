@@ -62,7 +62,7 @@ class MoveableObject extends DrawableObject {
     }
 
     isHurt() {
-        return Date.now() - this.lastHit < 800;
+        return Date.now() - this.lastHit < 300;
     }
 
     isColliding(object) {

@@ -85,7 +85,26 @@
             <span><kbd>Space</kbd> Jump</span>
             <span><kbd>K</kbd> Throw</span>
         </section>
+
+        <button id="imprint-btn" type="button" class="imprint-link" onclick="openImprint()">Imprint</button>
     </main>
+
+    <div id="rotate-overlay" class="rotate-overlay">
+        <div class="rotate-content">
+            <div class="rotate-icon">📱</div>
+            <p>Please rotate your device to landscape mode to play.</p>
+        </div>
+    </div>
+
+    <section id="imprint-modal" class="screen hidden">
+        <div class="screen-content imprint-content">
+            <h2>Imprint</h2>
+            <p><strong>Michael Zünd</strong><br>
+            Developer Academy Project – El Pollo Loco<br>
+            Contact: michi.zuend99@hotmail.com</p>
+            <button type="button" onclick="closeImprint()">Close</button>
+        </div>
+    </section>
 </body>
 
 </html>

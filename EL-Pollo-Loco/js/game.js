@@ -7,6 +7,28 @@ function init() {
     canvas = document.getElementById("canvas");
     bindButtonEvents();
     bindMobileControls();
+    bindFullscreenChangeListener();
+}
+
+function bindFullscreenChangeListener() {
+    document.addEventListener("fullscreenchange", updateFullscreenButton);
+    document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
+}
+
+function updateFullscreenButton() {
+    const btn = document.getElementById("fullscreen-btn");
+    const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+    btn.classList.toggle("active", isFullscreen);
+    btn.textContent = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+}
+
+function openImprint() {
+    document.getElementById("imprint-modal").classList.remove("hidden");
+}
+
+function closeImprint() {
+    document.getElementById("imprint-modal").classList.add("hidden");
 }
 
 function bindButtonEvents() {

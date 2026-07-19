@@ -134,6 +134,7 @@ class World {
                 this.character.bounceAfterStomp();
             } else if (this.character.hit()) {
                 this.statusBar.setPercentage(this.character.energy);
+                this.character.updateAnimation();
                 this.character.bounceAfterHit(enemy.x < this.character.x);
             }
         });

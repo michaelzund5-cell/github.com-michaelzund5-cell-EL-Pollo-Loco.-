@@ -31,7 +31,13 @@ class DrawableObject {
 
     draw(ctx) {
         if (!(this.img instanceof HTMLImageElement)) return;
+
+        if (this.isHurt?.() && !this.isDead?.()) {
+            ctx.globalAlpha = Math.floor(Date.now() / 100) % 2 === 0 ? 0.4 : 1;
+        }
+
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        ctx.globalAlpha = 1;
     }
 
     playAnimation(images) {
