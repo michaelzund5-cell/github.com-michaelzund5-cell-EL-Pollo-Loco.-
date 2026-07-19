@@ -433,8 +433,16 @@ kbd {
 
 /* --- Mobile-Controls nur bei echten Touch-Geräten mit schmalem Screen --- */
 
-@media (max-width: 760px) and (pointer: coarse) {
+@media (pointer: coarse) {
     .mobile-controls {
         display: flex;
+    }
+}
+
+/* --- Tastatur-Hinweise auf Touch-Geräten ausblenden (auch im Fullscreen) --- */
+
+@media (pointer: coarse) {
+    .controls-info {
+        display: none !important;
     }
 }
