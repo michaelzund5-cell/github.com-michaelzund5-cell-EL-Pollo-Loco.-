@@ -1,3 +1,4 @@
+/** Zeigt an, wie viele Flaschen der Charakter aktuell zum Werfen hat. */
 class BottleStatusBar extends DrawableObject {
     IMAGES = [
         "./assets/img/img_pollo_locco/img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png",

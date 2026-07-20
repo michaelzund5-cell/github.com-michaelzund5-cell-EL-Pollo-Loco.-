@@ -1,3 +1,9 @@
+/**
+ * Der Endgegner. Steht zunächst still und wird erst aktiv ("getriggert"),
+ * sobald der Charakter nah genug herankommt. Danach patrouilliert er
+ * schneller als normale Chicken (siehe patrol()). Wird nur durch
+ * Flaschentreffer besiegt, nicht durch Draufspringen.
+ */
 class Endboss extends Chicken {
     IMAGES_WALKING = [
         "./assets/img/img_pollo_locco/img/4_enemie_boss_chicken/1_walk/G1.png",
@@ -47,6 +53,12 @@ class Endboss extends Chicken {
         this.otherDirection = true;
     }
 
+    /**
+     * Prüft, ob der Charakter nah genug ist, um den Boss erstmals zu
+     * "triggern". Einmal ausgelöst, patrouilliert der Boss danach dauerhaft
+     * mit erhöhter Geschwindigkeit – unabhängig davon, wo der Charakter
+     * sich als Nächstes hinbewegt (kein ständiges Verfolgen).
+     */
     patrol() {
         if (this.isDefeated) return;
 
@@ -65,6 +77,7 @@ class Endboss extends Chicken {
         super.patrol();
     }
 
+    /** Zeigt Tod-, Verletzt- oder Lauf-Animation je nach Zustand. */
     updateAnimation() {
         if (this.isDefeated) {
             this.playDeathAnimationOnce();
@@ -75,6 +88,12 @@ class Endboss extends Chicken {
         }
     }
 
+    /**
+     * Fügt dem Boss Schaden durch einen Flaschentreffer zu.
+     * Besiegt ihn automatisch, sobald die Energie 0 erreicht.
+     * @param {number} [damage=20] - Schaden pro Treffer.
+     * @returns {boolean} true, wenn der Treffer angewendet wurde.
+     */
     takeBottleHit(damage = 20) {
         if (this.isDefeated || this.isHurt()) return false;
 
@@ -90,6 +109,7 @@ class Endboss extends Chicken {
         return true;
     }
 
+    /** Spielt die Todesanimation einmal durch und bleibt auf dem letzten Bild. */
     playDeathAnimationOnce() {
         if (this.deathAnimationFinished) return;
 
@@ -104,6 +124,11 @@ class Endboss extends Chicken {
         }
     }
 
+    /**
+     * Der Endboss wird nie automatisch aus dem Spiel entfernt (im Gegensatz
+     * zu normalen Chicken), da er für den Sieg-Bildschirm gebraucht wird.
+     * @returns {boolean} immer false.
+     */
     canBeRemoved() {
         return false;
     }

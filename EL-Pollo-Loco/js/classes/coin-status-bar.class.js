@@ -1,3 +1,4 @@
+/** Zeigt den Fortschritt beim Coin-Sammeln an (0-100% in 20er-Schritten). */
 class CoinStatusBar extends DrawableObject {
     IMAGES = [
         "./assets/img/img_pollo_locco/img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png",

@@ -1,3 +1,9 @@
+/**
+ * Die tatsächlich geworfene, fliegende Flasche (nicht zu verwechseln mit
+ * Bottle, der am Boden liegenden Sammel-Flasche). Fliegt in einer Bogenbahn
+ * nach vorne, rotiert dabei, und zerspringt (Splash-Animation), sobald sie
+ * den Boden erreicht oder ein Ziel trifft.
+ */
 class ThrowableObject extends MoveableObject {
     IMAGES_ROTATION = [
         "./assets/img/img_pollo_locco/img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png",
@@ -19,6 +25,11 @@ class ThrowableObject extends MoveableObject {
     markedForRemoval = false;
     direction = 1;
 
+    /**
+     * @param {number} x - Start-X-Position (an der Wurfhand des Charakters).
+     * @param {number} y - Start-Y-Position.
+     * @param {boolean} [otherDirection=false] - true, wenn nach links geworfen wird.
+     */
     constructor(x, y, otherDirection = false) {
         super();
 
@@ -38,6 +49,11 @@ class ThrowableObject extends MoveableObject {
         this.animate();
     }
 
+    /**
+     * Startet die Wurfbewegung: leichter Aufwärtsimpuls plus Schwerkraft,
+     * während sie sich gleichzeitig horizontal in Wurfrichtung bewegt.
+     * Löst automatisch den Splash aus, sobald sie den Boden erreicht.
+     */
     throw() {
         this.speedY = -15;
         this.applyGravity();
@@ -50,6 +66,7 @@ class ThrowableObject extends MoveableObject {
         }, 1000 / 60);
     }
 
+    /** Wechselt je nach Zustand zwischen Rotations- und Splash-Animation. */
     animate() {
         this.setGameInterval(() => {
             if (this.markedForRemoval) return;
@@ -62,6 +79,7 @@ class ThrowableObject extends MoveableObject {
         }, 100);
     }
 
+    /** Löst das Zerspringen der Flasche aus (z.B. bei Bodenkontakt oder Treffer). */
     splash() {
         if (this.isSplashing || this.markedForRemoval) return;
 
@@ -70,6 +88,10 @@ class ThrowableObject extends MoveableObject {
         this.resetAnimation();
     }
 
+    /**
+     * Spielt die Splash-Animation einmal komplett durch und markiert die
+     * Flasche danach zur Entfernung aus dem Spiel.
+     */
     playSplashAnimationOnce() {
         const index = Math.min(this.currentImage, this.IMAGES_SPLASH.length - 1);
         const path = this.IMAGES_SPLASH[index];

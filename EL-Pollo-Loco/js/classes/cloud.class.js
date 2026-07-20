@@ -1,4 +1,13 @@
+/**
+ * Dekorative Wolke im Hintergrund. Bewegt sich langsam nach links und
+ * springt zurück ans rechte Levelende, sobald sie links aus dem Bild ist
+ * (Endlos-Effekt).
+ */
 class Cloud extends MoveableObject {
+    /**
+     * @param {number} [x=100] - Start-X-Position.
+     * @param {number} [imageIndex=1] - Welches Wolkenbild genutzt wird.
+     */
     constructor(x = 100, imageIndex = 1) {
         super();
 

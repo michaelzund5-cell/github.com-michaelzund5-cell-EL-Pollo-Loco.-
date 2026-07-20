@@ -4,8 +4,14 @@
     padding: 0;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
     font-family: Arial, sans-serif;
     background-image: url("../assets/img/img_pollo_locco/img/9_intro_outro_screens/start/startscreen_1.png");
     background-size: cover;
@@ -192,6 +198,12 @@ kbd {
     color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+#pause-btn,
+#fullscreen-btn {
+    min-width: 105px;
+    text-align: center;
 }
 
 .game-actions button:hover {

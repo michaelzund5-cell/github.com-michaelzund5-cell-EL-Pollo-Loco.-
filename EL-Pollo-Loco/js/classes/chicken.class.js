@@ -1,3 +1,9 @@
+/**
+ * Normaler Gegner (Chicken). Patrouilliert selbstständig zwischen einer
+ * linken und rechten Grenze hin und her. Wird besiegt durch Sprung von oben
+ * oder einen Flaschentreffer (siehe World.checkCharacterEnemyCollisions /
+ * checkThrowableEnemyCollisions).
+ */
 class Chicken extends MoveableObject {
     IMAGES_WALKING = [
         "./assets/img/img_pollo_locco/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
@@ -13,6 +19,11 @@ class Chicken extends MoveableObject {
     leftBorder = 100;
     rightBorder = 0;
 
+    /**
+     * @param {number} [x] - Start-X-Position (zufällig, falls nicht angegeben).
+     * @param {number} [leftBorder=100] - Linke Patrouillen-Grenze.
+     * @param {number} [rightBorder=2880] - Rechte Patrouillen-Grenze.
+     */
     constructor(x = 500 + Math.random() * 1800, leftBorder = 100, rightBorder = 2880) {
         super();
 
@@ -38,6 +49,7 @@ class Chicken extends MoveableObject {
         this.animate();
     }
 
+    /** Startet Bewegungs-Loop (Patrouille) und Animations-Loop. */
     animate() {
         this.setGameInterval(() => {
             if (!this.isDefeated) this.patrol();
@@ -46,6 +58,10 @@ class Chicken extends MoveableObject {
         this.setGameInterval(() => this.updateAnimation(), 200);
     }
 
+    /**
+     * Bewegt das Chicken zwischen linker und rechter Grenze hin und her.
+     * Wechselt die Richtung automatisch, sobald eine Grenze erreicht ist.
+     */
     patrol() {
         if (this.x <= this.leftBorder) {
             this.x = this.leftBorder;
@@ -62,6 +78,7 @@ class Chicken extends MoveableObject {
         }
     }
 
+    /** Zeigt entweder das Tot-Bild oder die laufende Animation. */
     updateAnimation() {
         if (this.isDefeated) {
             this.img = this.imageCache[this.IMAGE_DEAD];
@@ -70,6 +87,10 @@ class Chicken extends MoveableObject {
         }
     }
 
+    /**
+     * Markiert das Chicken als besiegt: stoppt Bewegung, zeigt das Tot-Bild
+     * und plant seine Entfernung aus dem Spiel nach kurzer Verzögerung.
+     */
     defeat() {
         if (this.isDefeated) return;
 
@@ -81,6 +102,7 @@ class Chicken extends MoveableObject {
         this.img = this.imageCache[this.IMAGE_DEAD];
     }
 
+    /** @returns {boolean} true, sobald das Chicken aus dem Spiel entfernt werden darf. */
     canBeRemoved() {
         return this.isDefeated && Date.now() >= this.removeAt;
     }

@@ -17,16 +17,17 @@ Mein Vorgehen pro Feature: zuerst überlegen, wie ich es angehe und warum genau 
 **Grundgerüst**
 - Klassenstruktur mit Vererbung (`DrawableObject` → `MoveableObject` → `Character`/`Chicken`/`BabyChicken`/`Endboss`)
 - Kamera folgt dem Charakter, Grenzen sauber an die Levelbreite gekoppelt
+- Alle Klassen und komplexeren Methoden mit JSDoc-Kommentaren dokumentiert
 
 **Charakter**
 - Bewegung, Sprung, Kollisionserkennung
-- Hit-Cooldown: Charakter wird bei Gegnerkontakt nicht durchgehend, sondern nur alle 800ms beschädigt
-- Rückstoß bei seitlichem Gegnertreffer, damit er nicht dauerhaft mit dem Gegner überlappt und mehrfach hintereinander Schaden nimmt
-- Automatische Schlaf-Animation nach 7 Sekunden Inaktivität, wacht bei Bewegung sofort wieder auf
+- Hit-Cooldown: Charakter wird bei Gegnerkontakt nicht durchgehend, sondern nur alle 300ms beschädigt
+- Rückstoß bei seitlichem Gegnertreffer, damit er nicht dauerhaft mit dem Gegner überlappt
+- Automatische Schlaf-Animation nach 7 Sekunden Inaktivität, wacht bei Bewegung, Treffer oder Flaschenwurf sofort wieder auf
 - Lebensanzeige (Statusbar) oben links, zeigt den Energiestand in 20%-Schritten
 
 **Sammelobjekte & Kampf**
-- Sammelbare Coins und Flaschen, auf Bodenhöhe im Level platziert
+- Sammelbare Coins und Flaschen, auf Bodenhöhe im Level platziert, mit eng anliegender Kollisionsbox (kein Einsammeln ohne echte Berührung)
 - Wurfsystem mit Cooldown (700ms), damit man nicht durch Halten der Taste spammen kann
 - Flaschentreffer und Sprung-auf-Gegner töten normale Chicken/BabyChicken
 
@@ -36,20 +37,25 @@ Mein Vorgehen pro Feature: zuerst überlegen, wie ich es angehe und warum genau 
 - Eigene Lebensanzeige, Hurt- und Death-Animation
 - Verliert Energie durch Flaschentreffer
 
+**Sound**
+- Eigener SoundManager verwaltet alle Effekte zentral
+- Sprung-, Coin-, Wurf-, Treffer- und Splash-Sound sowie Game-Over-/Sieg-Sound
+- Hintergrundmusik in Dauerschleife, stoppt automatisch bei Spielende oder Rückkehr ins Hauptmenü
+- Mute-Button schaltet Musik und Effekte zuverlässig stumm
+
 **Screens & UI**
 - Startscreen, Game-Over- und You-Win-Bildschirm mit passendem Hintergrundbild
-- Einheitliches Button-Design (Start, Fullscreen, Restart, Mute, Pause)
+- Einheitliches Button-Design (Start, Fullscreen, Main Menu, Mute, Pause)
+- In-Game-Buttons sind im Hauptmenü ausgeblendet und erscheinen erst nach Spielstart
 - Fullscreen-Modus vergrößert die komplette Seite sauber zentriert, inklusive Hintergrund
-- Mobile-Steuerung mit Touch-Buttons, responsives Layout für kleine Screens und Querformat
+- Mobile-Steuerung mit Touch-Buttons (funktioniert auf jeder Bildschirmgröße), Tastatur-Hinweise werden auf Touch-Geräten automatisch ausgeblendet
+- Rotate-Hinweis bei Hochformat auf kleinen Screens
+- Seite ist nicht mehr versehentlich scrollbar
+- Impressum über eigenen Button erreichbar
 
 **Sonstiges**
 - Character-Death-Animation läuft einmal durch und bleibt im letzten Bild stehen
-
-## Was als Nächstes kommt
-
-- Sound-Effekte einbauen (Sprung, Coin, Wurf, Treffer, Hintergrundmusik) – aktuell einziger fehlender Punkt
-- Code-Kommentare an Klassen und komplexeren Methoden ergänzen, damit sich das Projekt bei wachsender Größe weiterhin schnell lesen lässt
-- console.log-Reste im Produktivcode entfernen
+- Kein `console.log` im Produktivcode
 
 ## Technologien
 

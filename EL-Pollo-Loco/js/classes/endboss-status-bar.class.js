@@ -1,3 +1,8 @@
+/**
+ * Lebensanzeige des Endgegners. Wird erst eingeblendet, sobald der Boss
+ * getriggert wurde bzw. der Charakter nah genug im Level ist (siehe
+ * World.drawUserInterface).
+ */
 class EndbossStatusBar extends DrawableObject {
     IMAGES = [
         "./assets/img/img_pollo_locco/img/7_statusbars/2_statusbar_endboss/orange/orange0.png",

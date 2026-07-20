@@ -1,3 +1,8 @@
+/**
+ * Wandelt physische Tastatur-Events in einfache boolesche Zustände um
+ * (LEFT, RIGHT, SPACE, THROW), die von Character und World ausgelesen
+ * werden. Mobile-Touch-Buttons setzen dieselben Eigenschaften direkt.
+ */
 class Keyboard {
     LEFT = false;
     RIGHT = false;
@@ -11,6 +16,13 @@ class Keyboard {
         window.addEventListener("keyup", this.keyUpHandler);
     }
 
+    /**
+     * Verarbeitet ein einzelnes Tastatur-Event und setzt die entsprechende
+     * Eigenschaft. Verhindert das Standard-Browserverhalten (z.B. Scrollen)
+     * für die genutzten Tasten.
+     * @param {KeyboardEvent} event
+     * @param {boolean} isPressed - true bei keydown, false bei keyup.
+     */
     handleKey(event, isPressed) {
         const key = event.key.toLowerCase();
 
@@ -24,6 +36,7 @@ class Keyboard {
         }
     }
 
+    /** Setzt alle Tasten-Zustände zurück (z.B. beim Pausieren). */
     reset() {
         this.LEFT = false;
         this.RIGHT = false;
@@ -31,6 +44,7 @@ class Keyboard {
         this.THROW = false;
     }
 
+    /** Entfernt die Event-Listener wieder (z.B. beim Beenden des Spiels). */
     destroy() {
         window.removeEventListener("keydown", this.keyDownHandler);
         window.removeEventListener("keyup", this.keyUpHandler);
