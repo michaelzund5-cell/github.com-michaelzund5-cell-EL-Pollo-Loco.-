@@ -1,4 +1,4 @@
-/** Zeigt an, wie viele Flaschen der Charakter aktuell zum Werfen hat. */
+/** Represents the BottleStatusBar game component. */
 class BottleStatusBar extends DrawableObject {
     IMAGES = [
         "./assets/img/img_pollo_locco/img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png",
@@ -9,6 +9,7 @@ class BottleStatusBar extends DrawableObject {
         "./assets/img/img_pollo_locco/img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png"
     ];
 
+    /** Initializes a new instance. */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
@@ -19,11 +20,13 @@ class BottleStatusBar extends DrawableObject {
         this.setPercentage(0);
     }
 
+    /** Executes the setPercentage operation. */
     setPercentage(percentage) {
         const safePercentage = Math.max(0, Math.min(100, percentage));
         this.img = this.imageCache[this.IMAGES[this.resolveImageIndex(safePercentage)]];
     }
 
+    /** Executes the resolveImageIndex operation. */
     resolveImageIndex(percentage) {
         if (percentage >= 100) return 5;
         if (percentage >= 80) return 4;

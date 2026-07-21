@@ -1,4 +1,4 @@
-/** Zeigt den Fortschritt beim Coin-Sammeln an (0-100% in 20er-Schritten). */
+/** Represents the CoinStatusBar game component. */
 class CoinStatusBar extends DrawableObject {
     IMAGES = [
         "./assets/img/img_pollo_locco/img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png",
@@ -9,6 +9,7 @@ class CoinStatusBar extends DrawableObject {
         "./assets/img/img_pollo_locco/img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png"
     ];
 
+    /** Initializes a new instance. */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
@@ -19,11 +20,13 @@ class CoinStatusBar extends DrawableObject {
         this.setPercentage(0);
     }
 
+    /** Executes the setPercentage operation. */
     setPercentage(percentage) {
         const safePercentage = Math.max(0, Math.min(100, percentage));
         this.img = this.imageCache[this.IMAGES[this.resolveImageIndex(safePercentage)]];
     }
 
+    /** Executes the resolveImageIndex operation. */
     resolveImageIndex(percentage) {
         if (percentage >= 100) return 5;
         if (percentage >= 80) return 4;

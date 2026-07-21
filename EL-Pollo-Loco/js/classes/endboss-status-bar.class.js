@@ -1,8 +1,4 @@
-/**
- * Lebensanzeige des Endgegners. Wird erst eingeblendet, sobald der Boss
- * getriggert wurde bzw. der Charakter nah genug im Level ist (siehe
- * World.drawUserInterface).
- */
+/** Represents the EndbossStatusBar game component. */
 class EndbossStatusBar extends DrawableObject {
     IMAGES = [
         "./assets/img/img_pollo_locco/img/7_statusbars/2_statusbar_endboss/orange/orange0.png",
@@ -15,6 +11,7 @@ class EndbossStatusBar extends DrawableObject {
 
     percentage = 100;
 
+    /** Initializes a new instance. */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
@@ -25,12 +22,14 @@ class EndbossStatusBar extends DrawableObject {
         this.setPercentage(100);
     }
 
+    /** Executes the setPercentage operation. */
     setPercentage(percentage) {
         this.percentage = Math.max(0, Math.min(100, percentage));
         const path = this.IMAGES[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
+    /** Executes the resolveImageIndex operation. */
     resolveImageIndex() {
         if (this.percentage === 100) return 5;
         if (this.percentage >= 80) return 4;

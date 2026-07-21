@@ -1,9 +1,4 @@
-/**
- * Die Spielfigur (Pepe). Steuert Bewegung per Tastatur, Sprung, Werfen,
- * sowie alle Animationszustände (Laufen, Springen, Idle, Schlaf, Verletzt,
- * Tod). Bekommt vom World-Objekt eine Referenz auf sich selbst (`world`),
- * um z.B. Sounds abzuspielen.
- */
+/** Represents the Character game component. */
 class Character extends MoveableObject {
     IMAGES_WALKING = [
         "./assets/img/img_pollo_locco/img/2_character_pepe/2_walk/W-21.png",
@@ -73,76 +68,75 @@ class Character extends MoveableObject {
     deathAnimationFinished = false;
     lastActionAt = Date.now();
 
-    /**
-     * @param {Keyboard} keyboard - Zentrales Tastatur-Objekt zur Steuerung.
-     * @param {number} levelEndX - X-Koordinate des Levelendes (Bewegungsgrenze).
-     */
+    /** Initializes a new character instance. */
     constructor(keyboard, levelEndX) {
         super();
         this.keyboard = keyboard;
         this.levelEndX = levelEndX;
+        this.loadCharacterImages();
+        this.setCharacterDimensions();
+        this.applyGravity();
+        this.animate();
+    }
 
+    /** Loads every character animation sequence. */
+    loadCharacterImages() {
         this.loadImage(this.IMAGES_WALKING[0]);
-        this.loadImages(this.IMAGES_WALKING);
-        this.loadImages(this.IMAGES_JUMPING);
-        this.loadImages(this.IMAGES_IDLE);
-        this.loadImages(this.IMAGES_LONG_IDLE);
-        this.loadImages(this.IMAGES_HURT);
-        this.loadImages(this.IMAGES_DEAD);
+        [this.IMAGES_WALKING, this.IMAGES_JUMPING, this.IMAGES_IDLE,
+            this.IMAGES_LONG_IDLE, this.IMAGES_HURT, this.IMAGES_DEAD]
+            .forEach((images) => this.loadImages(images));
+    }
 
+    /** Sets the initial character position and dimensions. */
+    setCharacterDimensions() {
         this.x = 100;
         this.y = 250;
         this.groundY = 250;
         this.width = 150;
         this.height = 190;
         this.speed = 5;
-
-        this.applyGravity();
-        this.animate();
     }
 
-    /**
-     * Startet die beiden Haupt-Loops der Spielfigur:
-     * Bewegungslogik (60x pro Sekunde) und Animation (alle 150ms).
-     */
+    /** Executes the animate operation. */
     animate() {
         this.setGameInterval(() => this.handleMovement(), 1000 / 60);
         this.setGameInterval(() => this.updateAnimation(), 150);
     }
 
-    /**
-     * Wertet die aktuell gedrückten Tasten aus und bewegt den Charakter
-     * entsprechend. Wird nicht mehr ausgeführt, sobald der Charakter tot ist.
-     */
+    /** Handles movement input for the current frame. */
     handleMovement() {
         if (this.isDead()) return;
+        this.handleHorizontalMovement();
+        this.handleJump();
+    }
 
+    /** Handles left and right movement input. */
+    handleHorizontalMovement() {
         if (this.keyboard.RIGHT && this.x < this.levelEndX - this.width) {
-            this.otherDirection = false;
-            this.moveRight();
-            this.registerAction();
+            this.moveInDirection(false, () => this.moveRight());
         }
-
         if (this.keyboard.LEFT && this.x > 0) {
-            this.otherDirection = true;
-            this.moveLeft();
-            this.registerAction();
-        }
-
-        if (this.keyboard.SPACE && !this.isAboveGround()) {
-            this.jump();
-            this.resetAnimation();
-            this.registerAction();
-            this.world?.sound.play("jump");
+            this.moveInDirection(true, () => this.moveLeft());
         }
     }
 
-    /**
-     * Bestimmt anhand des aktuellen Zustands (tot, verletzt, in der Luft,
-     * läuft, lange inaktiv, oder ruht), welche Animation gerade gezeigt wird.
-     * Die Reihenfolge der Prüfungen ist wichtig: höher priorisierte
-     * Zustände (z.B. Tod) überschreiben niedrigere (z.B. Laufen).
-     */
+    /** Moves the character and records the action. */
+    moveInDirection(otherDirection, moveAction) {
+        this.otherDirection = otherDirection;
+        moveAction();
+        this.registerAction();
+    }
+
+    /** Starts a jump when the character is standing on the ground. */
+    handleJump() {
+        if (!this.keyboard.SPACE || this.isAboveGround()) return;
+        this.jump();
+        this.resetAnimation();
+        this.registerAction();
+        this.world?.sound.play("jump");
+    }
+
+    /** Executes the updateAnimation operation. */
     updateAnimation() {
         if (this.isDead()) {
             this.playDeathAnimationOnce();
@@ -159,27 +153,17 @@ class Character extends MoveableObject {
         }
     }
 
-    /**
-     * Merkt sich den Zeitpunkt der letzten Aktion (Bewegen, Springen, Werfen,
-     * Treffer kassieren). Wird gebraucht, um zu erkennen, wann der Charakter
-     * lange genug untätig war, um einzuschlafen.
-     */
+    /** Executes the registerAction operation. */
     registerAction() {
         this.lastActionAt = Date.now();
     }
 
-    /**
-     * @returns {boolean} true, wenn seit der letzten Aktion mehr als
-     * 7 Sekunden vergangen sind (Charakter soll einschlafen).
-     */
+    /** Executes the isLongIdle operation. */
     isLongIdle() {
         return Date.now() - this.lastActionAt > 7000;
     }
 
-    /**
-     * Spielt die Todesanimation genau einmal komplett durch und bleibt
-     * danach auf dem letzten Bild stehen, statt in eine Schleife zu gehen.
-     */
+    /** Executes the playDeathAnimationOnce operation. */
     playDeathAnimationOnce() {
         if (this.deathAnimationFinished) return;
 
@@ -194,16 +178,12 @@ class Character extends MoveableObject {
         }
     }
 
-    /** Kleiner Sprung nach oben, nachdem ein Gegner erfolgreich zerstampft wurde. */
+    /** Executes the bounceAfterStomp operation. */
     bounceAfterStomp() {
         this.speedY = -12;
     }
 
-    /**
-     * Stößt den Charakter nach einem seitlichen Treffer kurz vom Gegner weg,
-     * damit er nicht dauerhaft mit ihm überlappt und sofort wieder Schaden nimmt.
-     * @param {boolean} pushRight - true, um nach rechts zu stoßen (Gegner stand links).
-     */
+    /** Executes the bounceAfterHit operation. */
     bounceAfterHit(pushRight) {
         const knockback = 12;
         this.x += pushRight ? knockback : -knockback;

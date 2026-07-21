@@ -1,18 +1,11 @@
-/**
- * Sammelbare Münze im Level. Rotiert durch eine kleine Animation und
- * nutzt eine engere, zentrierte Kollisionsbox statt der vollen Sprite-Größe,
- * damit sie nur bei echter Berührung eingesammelt wird.
- */
+/** Represents the Coin game component. */
 class Coin extends MoveableObject {
     IMAGES_COIN = [
         "./assets/img/img_pollo_locco/img/8_coin/coin_1.png",
         "./assets/img/img_pollo_locco/img/8_coin/coin_2.png"
     ];
 
-    /**
-     * @param {number} x - X-Position im Level.
-     * @param {number} y - Y-Position im Level.
-     */
+    /** Initializes a new instance. */
     constructor(x, y) {
         super();
 
@@ -27,15 +20,12 @@ class Coin extends MoveableObject {
         this.animate();
     }
 
-    /** Startet die Dreh-Animation der Münze. */
+    /** Executes the animate operation. */
     animate() {
         this.setGameInterval(() => this.playAnimation(this.IMAGES_COIN), 200);
     }
 
-    /**
-     * Engere Kollisionsbox (50% der Sprite-Größe, zentriert), damit
-     * das Einsammeln realistischer wirkt als mit der vollen Bildgröße.
-     */
+    /** Executes the getCollisionBox operation. */
     getCollisionBox() {
         return {
             x: this.x + this.width * 0.25,

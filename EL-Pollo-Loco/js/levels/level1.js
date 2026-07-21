@@ -1,8 +1,4 @@
-/**
- * Baut Level 1 komplett zusammen: Hintergrund, Wolken, Gegner-Platzierung,
- * Sammelobjekte und die Levelbreite. Wird einmal pro Spielstart aufgerufen.
- * @returns {Level}
- */
+/** Executes the createLevel1 operation. */
 function createLevel1() {
     const endX = 2880;
 
@@ -40,6 +36,7 @@ function createLevel1() {
     });
 }
 
+/** Executes the createBackgrounds operation. */
 function createBackgrounds() {
     const backgrounds = [];
 

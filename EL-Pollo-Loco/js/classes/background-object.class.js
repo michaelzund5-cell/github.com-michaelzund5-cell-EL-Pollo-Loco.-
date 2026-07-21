@@ -1,14 +1,7 @@
-/**
- * Ein einzelnes Hintergrundbild-Segment (z.B. Himmel, Berge, Boden-Layer).
- * Mehrere Instanzen werden aneinandergereiht, um den Parallax-Hintergrund
- * über die gesamte Levelbreite zu erzeugen.
- */
+/** Represents the BackgroundObject game component. */
 class BackgroundObject extends DrawableObject {
 
-    /**
-     * @param {string} imagePath - Pfad zum Hintergrundbild.
-     * @param {number} x - X-Position dieses Segments im Level.
-     */
+    /** Initializes a new instance. */
     constructor(imagePath, x) {
         super();
         this.loadImage(imagePath);
@@ -19,7 +12,4 @@ class BackgroundObject extends DrawableObject {
         this.height = 480;
     }
 
-
-
 }
-

@@ -1,13 +1,10 @@
-/**
- * Verwaltet alle Sound-Effekte und die Hintergrundmusik des Spiels.
- * Effekte werden bei jedem Abspielen geklont (siehe play), damit sich
- * mehrere gleichzeitige Sounds nicht gegenseitig unterbrechen.
- */
+/** Represents the SoundManager game component. */
 class SoundManager {
     sounds = {};
     muted = false;
     musicTrack = null;
 
+    /** Initializes a new instance. */
     constructor() {
         this.register("coin", "./assets/audio/freesound_community-money-pickup-2-89563.mp3");
         this.register("gameOver", "./assets/audio/freesound_community-game-over-38511.mp3");
@@ -19,23 +16,13 @@ class SoundManager {
         this.register("throw", "./assets/audio/floraphonic-movement-swipe-whoosh-3-186577.mp3");
     }
 
-    /**
-     * Lädt eine Sounddatei und speichert sie unter einem einfachen Namen,
-     * damit sie später per play(name) genutzt werden kann.
-     * @param {string} name - Kurzer, sprechender Name (z.B. "coin").
-     * @param {string} path - Pfad zur Audiodatei.
-     */
+    /** Executes the register operation. */
     register(name, path) {
         const audio = new Audio(path);
         this.sounds[name] = audio;
     }
 
-    /**
-     * Spielt einen registrierten Sound-Effekt einmal ab. Erstellt dafür
-     * eine Kopie (cloneNode), damit sich schnell aufeinanderfolgende
-     * Sounds (z.B. mehrere Coins) nicht gegenseitig abschneiden.
-     * @param {string} name - Name des Sounds (siehe register-Aufrufe oben).
-     */
+    /** Executes the play operation. */
     play(name) {
         if (this.muted) return;
 
@@ -47,10 +34,7 @@ class SoundManager {
         instance.play().catch(() => {});
     }
 
-    /**
-     * Startet die Hintergrundmusik in Dauerschleife (leiser als die
-     * Effekte). Macht nichts, falls die Musik schon läuft.
-     */
+    /** Executes the playMusic operation. */
     playMusic() {
         if (this.musicTrack) return;
 
@@ -61,7 +45,7 @@ class SoundManager {
         if (!this.muted) this.musicTrack.play().catch(() => {});
     }
 
-    /** Stoppt die Hintergrundmusik komplett und setzt sie zurück auf den Anfang. */
+    /** Executes the stopMusic operation. */
     stopMusic() {
         if (!this.musicTrack) return;
 
@@ -70,10 +54,7 @@ class SoundManager {
         this.musicTrack = null;
     }
 
-    /**
-     * Schaltet Musik und Effekte stumm oder wieder an.
-     * @param {boolean} muted
-     */
+    /** Executes the setMuted operation. */
     setMuted(muted) {
         this.muted = muted;
 

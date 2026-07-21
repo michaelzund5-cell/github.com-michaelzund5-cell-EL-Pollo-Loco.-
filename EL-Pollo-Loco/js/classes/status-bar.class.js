@@ -1,8 +1,4 @@
-/**
- * Lebensanzeige des Charakters oben links. Zeigt eines von sechs Bildern
- * (0/20/40/60/80/100%) je nach aktuellem Energiestand. Das leere Bild (0)
- * erscheint erst bei wirklich 0%, nicht schon knapp darüber.
- */
+/** Represents the StatusBar game component. */
 class StatusBar extends DrawableObject {
     IMAGES = [
         "./assets/img/img_pollo_locco/img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png",
@@ -15,6 +11,7 @@ class StatusBar extends DrawableObject {
 
     percentage = 100;
 
+    /** Initializes a new instance. */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
@@ -25,19 +22,13 @@ class StatusBar extends DrawableObject {
         this.setPercentage(100);
     }
 
-    /**
-     * Setzt den angezeigten Prozentwert und aktualisiert das Bild passend dazu.
-     * @param {number} percentage - Neuer Wert (wird auf 0-100 begrenzt).
-     */
+    /** Executes the setPercentage operation. */
     setPercentage(percentage) {
         this.percentage = Math.max(0, Math.min(100, percentage));
         this.img = this.imageCache[this.IMAGES[this.resolveImageIndex()]];
     }
 
-    /**
-     * Ermittelt, welches der sechs Bilder zum aktuellen Prozentwert passt.
-     * @returns {number} Index in IMAGES (0-5).
-     */
+    /** Executes the resolveImageIndex operation. */
     resolveImageIndex() {
         if (this.percentage <= 0) return 0;
         if (this.percentage < 40) return 1;

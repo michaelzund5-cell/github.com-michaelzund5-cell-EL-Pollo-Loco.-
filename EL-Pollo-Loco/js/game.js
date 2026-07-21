@@ -1,151 +1,152 @@
-// Aktueller Canvas und die laufende World-Instanz (null, solange kein Spiel läuft).
 let canvas;
 let world;
 let isMuted = false;
 window.isGamePaused = false;
 window.isMuted = false;
 
-/**
- * Wird beim Laden der Seite aufgerufen (siehe body onload in index.html).
- * Bindet alle Buttons/Controls und versteckt die In-Game-Buttons initial,
- * solange der Startbildschirm sichtbar ist.
- */
+/** Initializes the page controls and restores saved settings. */
 function init() {
     canvas = document.getElementById("canvas");
+    restoreMuteSetting();
     bindButtonEvents();
     bindMobileControls();
     bindFullscreenChangeListener();
-    hideGameActions();
+    hideGameInterface();
 }
 
-/** Registriert Listener, die den Fullscreen-Button-Status aktuell halten. */
+/** Restores the saved mute state from local storage. */
+function restoreMuteSetting() {
+    isMuted = localStorage.getItem("elPolloLocoMuted") === "true";
+    window.isMuted = isMuted;
+    updateMuteButton();
+}
+
+/** Registers fullscreen state listeners. */
 function bindFullscreenChangeListener() {
     document.addEventListener("fullscreenchange", updateFullscreenButton);
     document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
 }
 
-/** Passt Text und Farbe des Fullscreen-Buttons an den aktuellen Zustand an. */
+/** Updates the fullscreen button without changing its width. */
 function updateFullscreenButton() {
-    const btn = document.getElementById("fullscreen-btn");
-    const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
-
-    btn.classList.toggle("active", isFullscreen);
-    btn.textContent = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+    const button = document.getElementById("fullscreen-btn");
+    const active = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    button.classList.toggle("active", active);
+    button.textContent = active ? "Exit Fullscreen" : "Fullscreen";
 }
 
-/** Öffnet das Impressum-Fenster. */
+/** Opens the imprint modal. */
 function openImprint() {
     document.getElementById("imprint-modal").classList.remove("hidden");
 }
 
-/** Schließt das Impressum-Fenster. */
+/** Closes the imprint modal. */
 function closeImprint() {
     document.getElementById("imprint-modal").classList.add("hidden");
 }
 
-/** Verknüpft alle festen UI-Buttons mit ihren jeweiligen Klick-Funktionen. */
+/** Connects all permanent interface buttons. */
 function bindButtonEvents() {
-    document.getElementById("fullscreen-btn").addEventListener("click", fullscreenGame);
-    document.getElementById("restart-btn").addEventListener("click", restartGame);
-    document.getElementById("mute-btn").addEventListener("click", toggleMute);
-    document.getElementById("start-game-btn").addEventListener("click", startGame);
-    document.getElementById("pause-btn").addEventListener("click", togglePause);
+    bindClick("fullscreen-btn", fullscreenGame);
+    bindClick("restart-btn", restartGame);
+    bindClick("mute-btn", toggleMute);
+    bindClick("start-game-btn", startGame);
+    bindClick("pause-btn", togglePause);
 }
 
-/**
- * Startet ein neues Spiel: beendet ein evtl. laufendes vorheriges Spiel,
- * blendet Start-/End-/Pause-Overlays aus, zeigt die In-Game-Buttons und
- * erzeugt eine frische World-Instanz.
- */
-function startGame() {
-    if (world) world.stop();
+/** Connects one click handler to an element. */
+function bindClick(elementId, handler) {
+    document.getElementById(elementId)?.addEventListener("click", handler);
+}
 
-    window.isGamePaused = false;
-    updatePauseButton();
+/** Starts a fresh game and displays the game controls. */
+function startGame() {
+    stopCurrentWorld();
+    resetPauseState();
     hideStartScreen();
     hideEndScreen();
-    hidePauseOverlay();
-    showGameActions();
+    showGameInterface();
     world = new World(canvas);
 }
 
-/**
- * Beendet das laufende Spiel und kehrt zum Startbildschirm (Hauptmenü)
- * zurück. Der Button dafür heißt bewusst "Main Menu", nicht "Restart",
- * weil genau das hier passiert.
- */
-function restartGame() {
-    if (world) {
-        world.stop();
-        world = null;
-    }
+/** Stops the current game instance when one exists. */
+function stopCurrentWorld() {
+    world?.stop();
+    world = null;
+}
 
-    window.isGamePaused = false;
-    updatePauseButton();
+/** Returns to the start screen. */
+function restartGame() {
+    stopCurrentWorld();
+    resetPauseState();
     hideEndScreen();
-    hidePauseOverlay();
-    hideGameActions();
+    hideGameInterface();
     showStartScreen();
 }
 
-/** Blendet die In-Game-Buttons (Fullscreen/Main Menu/Mute/Pause) ein. */
-function showGameActions() {
+/** Resets pause state and closes the pause overlay. */
+function resetPauseState() {
+    window.isGamePaused = false;
+    updatePauseButton();
+    hidePauseOverlay();
+}
+
+/** Displays all controls required during gameplay. */
+function showGameInterface() {
     document.querySelector(".game-actions")?.classList.remove("hidden");
+    document.querySelector(".mobile-controls")?.classList.remove("hidden");
 }
 
-/** Blendet die In-Game-Buttons aus (z.B. während der Startbildschirm sichtbar ist). */
-function hideGameActions() {
+/** Hides controls that are not required on the start screen. */
+function hideGameInterface() {
     document.querySelector(".game-actions")?.classList.add("hidden");
+    document.querySelector(".mobile-controls")?.classList.add("hidden");
 }
 
-/**
- * Wechselt in den bzw. aus dem Vollbildmodus. Nutzt die gesamte Seite
- * (.page) als Fullscreen-Ziel, nicht nur den Canvas-Kasten, damit Titel
- * und Steuerungshinweise mit vergrößert werden können.
- */
+/** Toggles fullscreen mode for the page. */
 function fullscreenGame() {
     const target = document.querySelector(".page") || document.documentElement;
-
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    } else if (target.requestFullscreen) {
-        target.requestFullscreen();
-    }
+    if (document.fullscreenElement) document.exitFullscreen();
+    else target.requestFullscreen?.();
 }
 
-/** Schaltet Musik und Sound-Effekte stumm bzw. wieder an. */
+/** Toggles audio and saves the choice in local storage. */
 function toggleMute() {
     isMuted = !isMuted;
     window.isMuted = isMuted;
-    document.getElementById("mute-btn").textContent = isMuted ? "Unmute" : "Mute";
+    localStorage.setItem("elPolloLocoMuted", String(isMuted));
+    updateMuteButton();
     world?.sound.setMuted(isMuted);
 }
 
-/**
- * Pausiert bzw. setzt das laufende Spiel fort. Setzt dabei auch alle
- * Tasten-Zustände zurück, damit z.B. kein Dauerlauf hängen bleibt.
- */
+/** Updates the mute button label. */
+function updateMuteButton() {
+    const button = document.getElementById("mute-btn");
+    if (button) button.textContent = isMuted ? "Unmute" : "Mute";
+}
+
+/** Pauses or resumes the current game. */
 function togglePause() {
     if (!world || world.gameFinished) return;
-
     window.isGamePaused = !window.isGamePaused;
     world.keyboard.reset();
     updatePauseButton();
-
-    if (window.isGamePaused) {
-        showPauseOverlay();
-    } else {
-        hidePauseOverlay();
-    }
+    togglePauseOverlay();
 }
 
-/** Aktualisiert die Beschriftung des Pause-Buttons (Pause/Resume). */
+/** Shows the pause overlay only while the game is paused. */
+function togglePauseOverlay() {
+    if (window.isGamePaused) showPauseOverlay();
+    else hidePauseOverlay();
+}
+
+/** Updates the pause button label. */
 function updatePauseButton() {
-    const pauseButton = document.getElementById("pause-btn");
-    pauseButton.textContent = window.isGamePaused ? "Resume" : "Pause";
+    const button = document.getElementById("pause-btn");
+    if (button) button.textContent = window.isGamePaused ? "Resume" : "Pause";
 }
 
-/** Verknüpft alle vier Touch-Buttons mit den entsprechenden Tasten-Zuständen. */
+/** Connects the four touch controls. */
 function bindMobileControls() {
     bindHoldButton("btn-left", "LEFT");
     bindHoldButton("btn-right", "RIGHT");
@@ -153,62 +154,52 @@ function bindMobileControls() {
     bindHoldButton("btn-throw", "THROW");
 }
 
-/**
- * Bindet einen einzelnen Touch-Button so, dass er sich wie eine gehaltene
- * Taste verhält: gedrückt beim Antippen, losgelassen beim Loslassen.
- * Events werden explizit als nicht-passiv registriert, damit
- * preventDefault() zuverlässig funktioniert (sonst gibt es Browser-Fehler).
- * @param {string} buttonId - ID des Buttons im HTML.
- * @param {string} keyName - Name der Eigenschaft im Keyboard-Objekt (z.B. "LEFT").
- */
+/** Connects press and release events to one touch control. */
 function bindHoldButton(buttonId, keyName) {
     const button = document.getElementById(buttonId);
     if (!button) return;
+    bindControlEvents(button, keyName, ["pointerdown"], true);
+    bindControlEvents(button, keyName, ["pointerup", "pointercancel", "pointerleave"], false);
+}
 
-    const setKey = (value) => {
-        if (!world?.keyboard) return;
-        world.keyboard[keyName] = value;
-    };
-
-    ["pointerdown", "touchstart"].forEach((eventName) => {
+/** Registers multiple pointer events for one keyboard state. */
+function bindControlEvents(button, keyName, eventNames, value) {
+    eventNames.forEach((eventName) => {
         button.addEventListener(eventName, (event) => {
             event.preventDefault();
-            setKey(true);
-        }, { passive: false });
-    });
-
-    ["pointerup", "pointercancel", "pointerleave", "touchend"].forEach((eventName) => {
-        button.addEventListener(eventName, (event) => {
-            event.preventDefault();
-            setKey(false);
-        }, { passive: false });
+            setKeyboardState(keyName, value);
+        });
     });
 }
 
-/** Blendet den Startbildschirm aus. */
+/** Updates a key state in the active world. */
+function setKeyboardState(keyName, value) {
+    if (world?.keyboard) world.keyboard[keyName] = value;
+}
+
+/** Hides the start screen. */
 function hideStartScreen() {
     document.getElementById("start-screen").classList.add("hidden");
 }
 
-/** Zeigt den Startbildschirm wieder an. */
+/** Displays the start screen. */
 function showStartScreen() {
     document.getElementById("start-screen").classList.remove("hidden");
 }
 
-/** Blendet den Game-Over-/Sieg-Bildschirm aus und setzt seine Zustandsklassen zurück. */
+/** Hides and resets the end screen. */
 function hideEndScreen() {
-    const endScreen = document.getElementById("end-screen");
-    if (!endScreen) return;
-    endScreen.classList.add("hidden");
-    endScreen.classList.remove("won", "lost");
+    const screen = document.getElementById("end-screen");
+    screen?.classList.add("hidden");
+    screen?.classList.remove("won", "lost");
 }
 
-/** Zeigt das Pause-Overlay an. */
+/** Displays the pause overlay. */
 function showPauseOverlay() {
     document.getElementById("pause-overlay")?.classList.remove("hidden");
 }
 
-/** Blendet das Pause-Overlay aus. */
+/** Hides the pause overlay. */
 function hidePauseOverlay() {
     document.getElementById("pause-overlay")?.classList.add("hidden");
 }
