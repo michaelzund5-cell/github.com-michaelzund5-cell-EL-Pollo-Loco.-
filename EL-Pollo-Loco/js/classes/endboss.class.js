@@ -40,8 +40,8 @@ class Endboss extends Chicken {
         this.width = 250;
         this.height = 400;
         this.speed = 0;
-        this.triggeredSpeed = 2.6;
-        this.alertRange = 500;
+        this.triggeredSpeed = 4.2;
+        this.alertRange = 650;
         this.energy = 100;
         this.lastHit = 0;
         this.leftBorder = 100;
@@ -80,7 +80,7 @@ class Endboss extends Chicken {
     }
 
     /** Executes the takeBottleHit operation. */
-    takeBottleHit(damage = 20) {
+    takeBottleHit(damage = 15) {
         if (this.isDefeated || this.isHurt()) return false;
 
         this.energy = Math.max(0, this.energy - damage);

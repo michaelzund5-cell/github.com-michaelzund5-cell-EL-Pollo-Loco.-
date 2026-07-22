@@ -594,3 +594,28 @@ kbd {
         bottom: max(8px, env(safe-area-inset-bottom));
     }
 }
+
+
+.end-screen-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.imprint-content a {
+    display: inline-block;
+    color: #fff2b2;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.address-placeholder {
+    display: inline-block;
+    margin: 8px 0;
+    padding: 4px 8px;
+    border: 1px dashed #ffd86b;
+    border-radius: 6px;
+    color: #ffd86b;
+}

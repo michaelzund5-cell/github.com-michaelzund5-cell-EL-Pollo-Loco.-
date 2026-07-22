@@ -3,6 +3,7 @@ let world;
 let isMuted = false;
 window.isGamePaused = false;
 window.isMuted = false;
+let wasPausedBeforeModal = false;
 
 /** Initializes the page controls and restores saved settings. */
 function init() {
@@ -35,14 +36,30 @@ function updateFullscreenButton() {
     button.textContent = active ? "Exit Fullscreen" : "Fullscreen";
 }
 
-/** Opens the imprint modal. */
+/** Opens the imprint and pauses an active game. @returns {void} */
 function openImprint() {
+    wasPausedBeforeModal = window.isGamePaused;
+    if (world && !world.gameFinished) pauseGameForModal();
     document.getElementById("imprint-modal").classList.remove("hidden");
 }
 
-/** Closes the imprint modal. */
+/** Closes the imprint and restores the previous pause state. @returns {void} */
 function closeImprint() {
     document.getElementById("imprint-modal").classList.add("hidden");
+    if (world && !world.gameFinished && !wasPausedBeforeModal) resumeGameAfterModal();
+}
+
+/** Pauses gameplay while a modal is open. @returns {void} */
+function pauseGameForModal() {
+    window.isGamePaused = true;
+    world.keyboard.reset();
+    updatePauseButton();
+}
+
+/** Resumes gameplay after closing a modal. @returns {void} */
+function resumeGameAfterModal() {
+    window.isGamePaused = false;
+    updatePauseButton();
 }
 
 /** Connects all permanent interface buttons. */
@@ -73,6 +90,11 @@ function startGame() {
 function stopCurrentWorld() {
     world?.stop();
     world = null;
+}
+
+/** Starts the game again immediately after an end screen. @returns {void} */
+function replayGame() {
+    startGame();
 }
 
 /** Returns to the start screen. */

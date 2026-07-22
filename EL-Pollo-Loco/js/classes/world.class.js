@@ -1,17 +1,40 @@
 /** Represents the World game component. */
 class World {
 
-    /** Initializes a new instance. */
+    /**
+     * Creates a game world for the supplied canvas.
+     *
+     * @param {HTMLCanvasElement} canvas - Canvas used to render the game.
+     */
     constructor(canvas) {
+        this.initializeCanvas(canvas);
+        this.initializeLevel();
+        this.initializeInterface();
+        this.initializeSound();
+        this.animationFrameId = null;
+        this.gameFinished = false;
+        this.draw();
+    }
+
+    /** Sets up canvas, context, and keyboard input. @param {HTMLCanvasElement} canvas @returns {void} */
+    initializeCanvas(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.keyboard = new Keyboard();
+        this.cameraX = 0;
+    }
+
+    /** Creates the level and assigns all world objects. @returns {void} */
+    initializeLevel() {
         this.level = createLevel1();
         this.levelEndX = this.level.endX;
         this.character = new Character(this.keyboard, this.levelEndX);
         this.character.world = this;
+        this.assignLevelObjects();
+    }
 
-        this.cameraX = 0;
+    /** Assigns enemies and collectables from the current level. @returns {void} */
+    assignLevelObjects() {
         this.enemies = this.level.enemies;
         this.endboss = this.enemies.find((enemy) => enemy instanceof Endboss);
         if (this.endboss) this.endboss.world = this;
@@ -20,19 +43,21 @@ class World {
         this.coins = this.level.coins;
         this.bottles = this.level.bottles;
         this.throwableObjects = [];
+    }
 
+    /** Creates all game status bars. @returns {void} */
+    initializeInterface() {
         this.statusBar = new StatusBar();
         this.coinStatusBar = new CoinStatusBar();
         this.bottleStatusBar = new BottleStatusBar();
         this.endbossStatusBar = new EndbossStatusBar();
+    }
 
+    /** Creates the sound manager and starts background music. @returns {void} */
+    initializeSound() {
         this.sound = new SoundManager();
         this.sound.setMuted(window.isMuted);
         this.sound.playMusic();
-
-        this.animationFrameId = null;
-        this.gameFinished = false;
-        this.draw();
     }
 
     /** Executes the draw operation. */
@@ -105,6 +130,7 @@ class World {
         this.checkCoinCollisions();
         this.checkBottleCollisions();
         this.checkThrowObjects();
+        this.playOccasionalEnemySound();
         this.removeFinishedObjects();
         this.checkGameState();
     }
@@ -142,31 +168,59 @@ class World {
         this.ctx.restore();
     }
 
-    /** Executes the checkCharacterEnemyCollisions operation. */
+    /** Checks and resolves collisions between Pepe and every enemy. @returns {void} */
     checkCharacterEnemyCollisions() {
-        this.enemies.forEach((enemy) => {
-            if (enemy.isDefeated || !this.character.isColliding(enemy)) return;
-
-            if (this.canStompEnemy(enemy)) {
-                enemy.defeat();
-                this.character.bounceAfterStomp();
-            } else if (this.character.hit()) {
-                this.statusBar.setPercentage(this.character.energy);
-                this.character.registerAction();
-                this.character.updateAnimation();
-                this.character.bounceAfterHit(enemy.x < this.character.x);
-                this.sound.play("hit");
-            }
-        });
+        this.enemies.forEach((enemy) => this.resolveEnemyCollision(enemy));
     }
 
-    /** Executes the canStompEnemy operation. */
-    canStompEnemy(enemy) {
-        if (enemy instanceof Endboss) return false;
+    /**
+     * Resolves a single enemy collision as a stomp or character hit.
+     *
+     * @param {Chicken|BabyChicken|Endboss} enemy - Colliding enemy.
+     * @returns {void}
+     */
+    resolveEnemyCollision(enemy) {
+        if (enemy.isDefeated || !this.character.isColliding(enemy)) return;
+        if (this.canStompEnemy(enemy)) return this.defeatEnemyByStomp(enemy);
+        this.damageCharacter(enemy);
+    }
 
-        const characterBottom = this.character.y + this.character.height;
-        const stompZone = enemy.y + enemy.height * 0.6;
-        return this.character.speedY > 0 && characterBottom <= stompZone;
+    /**
+     * Determines whether Pepe is falling onto a regular enemy from above.
+     *
+     * @param {Chicken|BabyChicken|Endboss} enemy - Enemy being checked.
+     * @returns {boolean} True when the collision is a valid stomp.
+     */
+    canStompEnemy(enemy) {
+        if (enemy instanceof Endboss || this.character.speedY < 0) return false;
+        const playerBox = this.character.getCollisionBox();
+        const enemyBox = enemy.getCollisionBox();
+        const playerCenter = playerBox.y + playerBox.height / 2;
+        const enemyCenter = enemyBox.y + enemyBox.height / 2;
+        return playerCenter < enemyCenter;
+    }
+
+    /** Defeats an enemy and bounces Pepe upward. @param {Chicken|BabyChicken} enemy @returns {void} */
+    defeatEnemyByStomp(enemy) {
+        enemy.defeat();
+        this.playChickenDefeatSounds();
+        this.character.bounceAfterStomp();
+    }
+
+    /** Plays the chicken and defeat sounds for regular enemies. @returns {void} */
+    playChickenDefeatSounds() {
+        this.sound.play("chicken");
+        this.sound.play("enemyDeath");
+    }
+
+    /** Applies enemy damage to Pepe. @param {Chicken|BabyChicken|Endboss} enemy @returns {void} */
+    damageCharacter(enemy) {
+        if (!this.character.hit()) return;
+        this.statusBar.setPercentage(this.character.energy);
+        this.character.registerAction();
+        this.character.updateAnimation();
+        this.character.bounceAfterHit(enemy.x < this.character.x);
+        this.sound.play("hit");
     }
 
     /** Executes the checkThrowableEnemyCollisions operation. */
@@ -181,10 +235,11 @@ class World {
             if (!enemy) return;
 
             if (enemy instanceof Endboss) {
-                if (!enemy.takeBottleHit(20)) return;
+                if (!enemy.takeBottleHit(15)) return;
                 this.endbossStatusBar.setPercentage(enemy.energy);
             } else {
                 enemy.defeat();
+                this.playChickenDefeatSounds();
             }
 
             this.sound.play("splash");
@@ -221,39 +276,56 @@ class World {
         });
     }
 
-    /** Executes the checkThrowObjects operation. */
+    /** Creates a thrown bottle when the input and cooldown allow it. @returns {void} */
     checkThrowObjects() {
-        const now = Date.now();
-        const throwCooldown = 700;
+        if (!this.canThrowBottle()) return;
+        const bottle = this.createThrowableBottle();
+        this.throwableObjects.push(bottle);
+        this.consumeBottle();
+    }
 
-        if (
-            !this.keyboard.THROW ||
-            this.character.bottles <= 0 ||
-            this.character.isDead() ||
-            (this.lastThrowTime && now - this.lastThrowTime < throwCooldown)
-        ) {
-            return;
-        }
+    /** Checks all requirements for throwing a bottle. @returns {boolean} True when Pepe can throw. */
+    canThrowBottle() {
+        const cooldownFinished = !this.lastThrowTime || Date.now() - this.lastThrowTime >= 700;
+        return this.keyboard.THROW && this.character.bottles > 0 &&
+            !this.character.isDead() && cooldownFinished;
+    }
 
-        this.lastThrowTime = now;
-
+    /** Creates a bottle at the correct side of Pepe. @returns {ThrowableObject} New throwable bottle. */
+    createThrowableBottle() {
+        this.lastThrowTime = Date.now();
         const startX = this.character.otherDirection
             ? this.character.x - 20
             : this.character.x + this.character.width - 35;
+        return new ThrowableObject(startX, this.character.y + 55, this.character.otherDirection);
+    }
 
-        const bottle = new ThrowableObject(
-            startX,
-            this.character.y + 55,
-            this.character.otherDirection
-        );
-
-        this.throwableObjects.push(bottle);
+    /** Removes one bottle and updates the bottle interface. @returns {void} */
+    consumeBottle() {
         this.character.bottles--;
         this.character.registerAction();
         this.sound.play("throw");
         const maxBottles = this.level.bottles.length;
         this.bottleStatusBar.setPercentage((this.character.bottles / maxBottles) * 100);
         this.keyboard.THROW = false;
+    }
+
+
+    /** Plays a subtle chicken sound at irregular intervals. @returns {void} */
+    playOccasionalEnemySound() {
+        if (!this.hasLivingChicken()) return;
+        const now = Date.now();
+        if (this.lastChickenSound && now - this.lastChickenSound < 5000) return;
+        if (Math.random() > 0.008) return;
+        this.lastChickenSound = now;
+        this.sound.play("chicken");
+    }
+
+    /** Checks whether at least one regular chicken is still alive. @returns {boolean} */
+    hasLivingChicken() {
+        return this.enemies.some((enemy) => {
+            return enemy instanceof Chicken && !(enemy instanceof Endboss) && !enemy.isDefeated;
+        });
     }
 
     /** Executes the removeFinishedObjects operation. */

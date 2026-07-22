@@ -25,13 +25,17 @@ class Coin extends MoveableObject {
         this.setGameInterval(() => this.playAnimation(this.IMAGES_COIN), 200);
     }
 
-    /** Executes the getCollisionBox operation. */
+    /**
+     * Returns the reduced collision area of the visible coin center.
+     *
+     * @returns {{x: number, y: number, width: number, height: number}} The coin collision box.
+     */
     getCollisionBox() {
         return {
-            x: this.x + this.width * 0.25,
-            y: this.y + this.height * 0.25,
-            width: this.width * 0.5,
-            height: this.height * 0.5
+            x: this.x + this.width * 0.34,
+            y: this.y + this.height * 0.34,
+            width: this.width * 0.32,
+            height: this.height * 0.32
         };
     }
 }

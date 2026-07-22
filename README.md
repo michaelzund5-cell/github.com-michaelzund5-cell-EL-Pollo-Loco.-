@@ -1,62 +1,74 @@
 # EL Pollo Loco
 
-Ein 2D Jump-'n'-Run-Spiel in Vanilla JavaScript, objektorientiert aufgebaut. Entstanden als Lernprojekt bei der Developer Academy, um OOP-Konzepte (Vererbung, Kapselung) praktisch anzuwenden statt nur in der Theorie zu verstehen.
+A 2D platformer built with Vanilla JavaScript using an object-oriented architecture. This project was created during the Developer Academy to apply OOP concepts such as inheritance and encapsulation in a practical environment instead of only learning them in theory.
 
-## Wie ich das Projekt angegangen bin
+## Project Approach
 
-Bevor ich angefangen habe zu coden, habe ich mir zuerst die Ordnerstruktur überlegt: eigene Ordner für Klassen (`classes`), Level-Daten (`levels`) und Hilfsfunktionen (`utils`), damit das Projekt auch bei wachsendem Umfang übersichtlich bleibt.
+Before writing any code, I first planned the project structure. I created separate folders for classes (`classes`), level data (`levels`), and utility functions (`utils`) to keep the project organized and maintainable as it grew.
 
-Beim Aufbau der Spielfiguren ist mir aufgefallen, dass Charakter, Chicken, BabyChicken und Endboss viele gemeinsame Eigenschaften haben (Position, Bewegung, Schwerkraft, Kollision). Statt das für jede Figur einzeln zu schreiben, habe ich eine gemeinsame Basisklasse `MoveableObject` gebaut, von der alle erben. Das hält den Code kleiner, vermeidet Wiederholung (DRY) und macht Bugs leichter auffindbar – ein Fehler in der Bewegungslogik muss nur an einer Stelle gefixt werden, nicht in vier.
+While implementing the game characters, I noticed that the Character, Chicken, BabyChicken, and Endboss shared many common features such as position, movement, gravity, and collision detection. Instead of duplicating this logic, I created a shared base class called `MoveableObject`, which all moving entities inherit from. This follows the DRY principle, reduces duplicated code, and makes debugging easier because movement-related fixes only need to be made in one place.
 
-Beim Endboss wollte ich kein stures Hin-und-Her-Patrouillieren von Anfang an. Deshalb steht er zu Beginn still und wird erst aktiv, sobald der Charakter in seine Nähe kommt (Trigger-Radius). Danach patrouilliert er wie ein normales Chicken, nur schneller – er verfolgt den Charakter aber bewusst nicht ständig, damit sich das Kampfverhalten vorhersehbar und fair anfühlt, statt frustrierend zu wirken.
+For the Endboss, I wanted to avoid a simple back-and-forth patrol from the beginning. Instead, the boss remains idle until the player enters a trigger radius. Once activated, it patrols faster than the normal chickens without constantly chasing the player, making the fight more predictable and balanced.
 
-Mein Vorgehen pro Feature: zuerst überlegen, wie ich es angehe und warum genau so – erst danach coden. Grober Zeitaufwand liegt bei ca. 70–80 % Überlegen/Debuggen und 20–30 % tatsächlichem Tippen.
+My workflow for every feature is always the same: first, I think about the best implementation and the reasoning behind it, and only then do I start coding. Roughly 70–80% of the development time is spent planning and debugging, while 20–30% is spent writing code.
 
-## Aktueller Stand
+## Current Features
 
-**Grundgerüst**
-- Klassenstruktur mit Vererbung (`DrawableObject` → `MoveableObject` → `Character`/`Chicken`/`BabyChicken`/`Endboss`)
-- Kamera folgt dem Charakter, Grenzen sauber an die Levelbreite gekoppelt
-- Alle Klassen und komplexeren Methoden mit JSDoc-Kommentaren dokumentiert
+### Core Architecture
 
-**Charakter**
-- Bewegung, Sprung, Kollisionserkennung
-- Hit-Cooldown: Charakter wird bei Gegnerkontakt nicht durchgehend, sondern nur alle 300ms beschädigt
-- Rückstoß bei seitlichem Gegnertreffer, damit er nicht dauerhaft mit dem Gegner überlappt
-- Automatische Schlaf-Animation nach 7 Sekunden Inaktivität, wacht bei Bewegung, Treffer oder Flaschenwurf sofort wieder auf
-- Lebensanzeige (Statusbar) oben links, zeigt den Energiestand in 20%-Schritten
+* Object-oriented class hierarchy (`DrawableObject` → `MoveableObject` → `Character` / `Chicken` / `BabyChicken` / `Endboss`)
+* Camera smoothly follows the player and respects the level boundaries
+* JSDoc documentation for all classes and complex methods
 
-**Sammelobjekte & Kampf**
-- Sammelbare Coins und Flaschen, auf Bodenhöhe im Level platziert, mit eng anliegender Kollisionsbox (kein Einsammeln ohne echte Berührung)
-- Wurfsystem mit Cooldown (700ms), damit man nicht durch Halten der Taste spammen kann
-- Flaschentreffer und Sprung-auf-Gegner töten normale Chicken/BabyChicken
+### Character
 
-**Endboss**
-- Steht zu Beginn still, wird erst durch Annäherung des Charakters ausgelöst (Trigger-Radius)
-- Patrouilliert danach schneller als normale Chicken, ohne den Charakter aktiv zu verfolgen
-- Eigene Lebensanzeige, Hurt- und Death-Animation
-- Verliert Energie durch Flaschentreffer
+* Walking, jumping, and collision detection
+* Damage cooldown prevents continuous damage while touching enemies (300 ms)
+* Knockback after side collisions with enemies
+* Automatic idle animation after 7 seconds of inactivity
+* Wakes up immediately after movement, taking damage, or throwing a bottle
+* Health bar updates in 20% steps
 
-**Sound**
-- Eigener SoundManager verwaltet alle Effekte zentral
-- Sprung-, Coin-, Wurf-, Treffer- und Splash-Sound sowie Game-Over-/Sieg-Sound
-- Hintergrundmusik in Dauerschleife, stoppt automatisch bei Spielende oder Rückkehr ins Hauptmenü
-- Mute-Button schaltet Musik und Effekte zuverlässig stumm
+### Collectibles & Combat
 
-**Screens & UI**
-- Startscreen, Game-Over- und You-Win-Bildschirm mit passendem Hintergrundbild
-- Einheitliches Button-Design (Start, Fullscreen, Main Menu, Mute, Pause)
-- In-Game-Buttons sind im Hauptmenü ausgeblendet und erscheinen erst nach Spielstart
-- Fullscreen-Modus vergrößert die komplette Seite sauber zentriert, inklusive Hintergrund
-- Mobile-Steuerung mit Touch-Buttons (funktioniert auf jeder Bildschirmgröße), Tastatur-Hinweise werden auf Touch-Geräten automatisch ausgeblendet
-- Rotate-Hinweis bei Hochformat auf kleinen Screens
-- Seite ist nicht mehr versehentlich scrollbar
-- Impressum über eigenen Button erreichbar
+* Collectible coins and bottles with accurate collision boxes
+* Bottle throwing system with a 700 ms cooldown
+* Normal chickens and baby chickens can be defeated by jumping on them or hitting them with bottles
 
-**Sonstiges**
-- Character-Death-Animation läuft einmal durch und bleibt im letzten Bild stehen
-- Kein `console.log` im Produktivcode
+### Endboss
 
-## Technologien
+* Starts inactive and is triggered when the player enters a defined radius
+* Moves faster than regular chickens after activation
+* Uses separate hurt and death animations
+* Has its own health bar
+* Takes damage from bottle hits
 
-Vanilla JavaScript (objektorientiert), HTML5 Canvas, CSS
+### Audio
+
+* Centralized `SoundManager` for handling all sound effects
+* Jump, coin, throw, hit, splash, game over, and victory sounds
+* Looping background music that automatically stops when the game ends or the player returns to the main menu
+* Mute button correctly enables and disables all sounds
+
+### Screens & User Interface
+
+* Start screen, Game Over screen, and Victory screen with individual background images
+* Consistent button design (Start, Fullscreen, Main Menu, Mute, Pause)
+* In-game controls remain hidden until the game starts
+* Fullscreen mode scales the entire game while keeping it centered
+* Mobile touch controls support different screen sizes
+* Keyboard controls are automatically hidden on touch devices
+* Rotation hint for portrait mode on small screens
+* The page no longer scrolls accidentally on mobile devices
+* Imprint accessible through a dedicated button
+
+### Additional Features
+
+* Character death animation plays once and remains on the final frame
+* No `console.log()` statements in the production code
+
+## Technologies
+
+* Vanilla JavaScript (Object-Oriented Programming)
+* HTML5 Canvas
+* CSS3
