@@ -194,12 +194,18 @@ class World {
      * @returns {boolean} True when the collision is a valid stomp.
      */
     canStompEnemy(enemy) {
-        if (enemy instanceof Endboss || this.character.speedY < 0) return false;
+        if (enemy instanceof Endboss) return false;
+
+        const isFalling = this.character.speedY > 0;
+        if (!isFalling) return false;
+
         const playerBox = this.character.getCollisionBox();
         const enemyBox = enemy.getCollisionBox();
-        const playerCenter = playerBox.y + playerBox.height / 2;
-        const enemyCenter = enemyBox.y + enemyBox.height / 2;
-        return playerCenter < enemyCenter;
+
+        const playerBottom = playerBox.y + playerBox.height;
+        const stompZone = enemyBox.y + enemyBox.height * 0.5;
+
+        return playerBottom <= stompZone;
     }
 
     /** Defeats an enemy and bounces Pepe upward. @param {Chicken|BabyChicken} enemy @returns {void} */
