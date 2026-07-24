@@ -3,6 +3,7 @@ class SoundManager {
     sounds = {};
     muted = false;
     musicTrack = null;
+    activeSounds = new Set();
 
     /** Registers all audio files used by the game. */
     constructor() {
@@ -51,10 +52,21 @@ class SoundManager {
      * @returns {void}
      */
     playAudioClone(original) {
-        if (!original) return;
+        if (!original || this.muted) return;
         const instance = original.cloneNode();
         instance.volume = original.volume;
-        instance.play().catch(() => { });
+        this.activeSounds.add(instance);
+        instance.addEventListener("ended", () => this.activeSounds.delete(instance), { once: true });
+        instance.play().catch(() => this.activeSounds.delete(instance));
+    }
+
+    /** Stops every currently playing sound effect. @returns {void} */
+    stopActiveSounds() {
+        this.activeSounds.forEach((sound) => {
+            sound.pause();
+            sound.currentTime = 0;
+        });
+        this.activeSounds.clear();
     }
 
     /**
@@ -107,8 +119,12 @@ class SoundManager {
      */
     setMuted(muted) {
         this.muted = muted;
+        if (muted) this.stopActiveSounds();
         if (!this.musicTrack) return;
-        if (muted) this.musicTrack.pause();
-        else this.musicTrack.play().catch(() => { });
+        if (muted) {
+            this.musicTrack.pause();
+        } else {
+            this.musicTrack.play().catch(() => { });
+        }
     }
 }

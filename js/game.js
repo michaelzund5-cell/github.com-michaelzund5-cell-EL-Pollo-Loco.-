@@ -65,6 +65,7 @@ function resumeGameAfterModal() {
 /** Connects all permanent interface buttons. */
 function bindButtonEvents() {
     bindClick("fullscreen-btn", fullscreenGame);
+    bindClick("reset-game-btn", replayGame);
     bindClick("restart-btn", restartGame);
     bindClick("mute-btn", toggleMute);
     bindClick("start-game-btn", startGame);
@@ -73,7 +74,9 @@ function bindButtonEvents() {
 
 /** Connects one click handler to an element. */
 function bindClick(elementId, handler) {
-    document.getElementById(elementId)?.addEventListener("click", handler);
+    const button = document.getElementById(elementId);
+    if (!button) return;
+    button.onclick = handler;
 }
 
 /** Starts a fresh game and displays the game controls. */
@@ -144,7 +147,10 @@ function toggleMute() {
 /** Updates the mute button label. */
 function updateMuteButton() {
     const button = document.getElementById("mute-btn");
-    if (button) button.textContent = isMuted ? "Unmute" : "Mute";
+    if (!button) return;
+    button.textContent = isMuted ? "Unmute" : "Mute";
+    button.setAttribute("aria-pressed", String(isMuted));
+    button.classList.toggle("active", isMuted);
 }
 
 /** Pauses or resumes the current game. */

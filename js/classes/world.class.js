@@ -13,6 +13,7 @@ class World {
         this.initializeSound();
         this.animationFrameId = null;
         this.gameFinished = false;
+        this.pendingBottleRespawns = [];
         this.draw();
     }
 
@@ -129,6 +130,7 @@ class World {
         this.checkThrowableEnemyCollisions();
         this.checkCoinCollisions();
         this.checkBottleCollisions();
+        this.respawnCollectedBottles();
         this.checkThrowObjects();
         this.playOccasionalEnemySound();
         this.removeFinishedObjects();
@@ -247,33 +249,71 @@ class World {
         });
     }
 
-    /** Executes the checkCoinCollisions operation. */
+    /** Collects coins only after a clear visible overlap. @returns {void} */
     checkCoinCollisions() {
         const totalCoins = this.level.coins.length;
-
         this.coins = this.coins.filter((coin) => {
-            if (!this.character.isColliding(coin)) return true;
-
-            this.character.coins++;
-            const percentage = (this.character.coins / totalCoins) * 100;
-            this.coinStatusBar.setPercentage(percentage);
-            this.sound.play("coin");
+            if (!this.isCollectibleTouched(coin)) return true;
+            this.collectCoin(totalCoins);
             return false;
         });
     }
 
-    /** Executes the checkBottleCollisions operation. */
+    /** Updates the character and interface after collecting a coin. @param {number} totalCoins @returns {void} */
+    collectCoin(totalCoins) {
+        this.character.coins++;
+        this.coinStatusBar.setPercentage((this.character.coins / totalCoins) * 100);
+        this.sound.play("coin");
+    }
+
+    /** Collects bottles only after a clear visible overlap. @returns {void} */
     checkBottleCollisions() {
-        const maxBottles = this.level.bottles.length;
-
         this.bottles = this.bottles.filter((bottle) => {
-            if (!this.character.isColliding(bottle)) return true;
-
-            this.character.bottles++;
-            const percentage = (this.character.bottles / maxBottles) * 100;
-            this.bottleStatusBar.setPercentage(percentage);
+            if (!this.isCollectibleTouched(bottle)) return true;
+            this.collectBottle(bottle);
             return false;
         });
+    }
+
+    /** Adds one bottle and schedules its return to the level. @param {Bottle} bottle @returns {void} */
+    collectBottle(bottle) {
+        this.character.bottles++;
+        this.updateBottleStatusBar();
+        this.pendingBottleRespawns.push({ x: bottle.x, y: bottle.y, respawnAt: Date.now() + 5000 });
+    }
+
+    /** Restores collected bottles after a short delay. @returns {void} */
+    respawnCollectedBottles() {
+        const now = Date.now();
+        const ready = this.pendingBottleRespawns.filter((entry) => entry.respawnAt <= now);
+        ready.forEach((entry) => this.bottles.push(new Bottle(entry.x, entry.y)));
+        this.pendingBottleRespawns = this.pendingBottleRespawns.filter((entry) => entry.respawnAt > now);
+    }
+
+    /** Checks whether a collectible visibly overlaps Pepe by several pixels. @param {Coin|Bottle} object @returns {boolean} */
+    isCollectibleTouched(object) {
+        const characterBox = this.getCollectibleCharacterBox();
+        const objectBox = object.getCollisionBox();
+        const overlapX = Math.min(characterBox.x + characterBox.width, objectBox.x + objectBox.width) - Math.max(characterBox.x, objectBox.x);
+        const overlapY = Math.min(characterBox.y + characterBox.height, objectBox.y + objectBox.height) - Math.max(characterBox.y, objectBox.y);
+        return overlapX >= 6 && overlapY >= 6;
+    }
+
+    /** Returns Pepe's narrow collision area used only for collectibles. @returns {{x:number,y:number,width:number,height:number}} */
+    getCollectibleCharacterBox() {
+        return {
+            x: this.character.x + this.character.width * 0.34,
+            y: this.character.y + this.character.height * 0.18,
+            width: this.character.width * 0.32,
+            height: this.character.height * 0.72
+        };
+    }
+
+    /** Updates the bottle status bar based on the bottles Pepe currently carries. @returns {void} */
+    updateBottleStatusBar() {
+        const maximumBottles = Math.max(1, this.level.bottles.length);
+        const percentage = (this.character.bottles / maximumBottles) * 100;
+        this.bottleStatusBar.setPercentage(percentage);
     }
 
     /** Creates a thrown bottle when the input and cooldown allow it. @returns {void} */
@@ -305,8 +345,7 @@ class World {
         this.character.bottles--;
         this.character.registerAction();
         this.sound.play("throw");
-        const maxBottles = this.level.bottles.length;
-        this.bottleStatusBar.setPercentage((this.character.bottles / maxBottles) * 100);
+        this.updateBottleStatusBar();
         this.keyboard.THROW = false;
     }
 
